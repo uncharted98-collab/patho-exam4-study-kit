@@ -21,6 +21,8 @@
   --merck-bg:#e3edff; --merck-border:#3a6cf0; --merck-text:#143a8c;
   --book-border:#9aa1c2;
   --inner-card:#fbfcff;
+  --table-accent:#7c3aed;
+  --table-bg:#f1ebfd;
 }
 [data-theme="dark"]{
   --bg:#13141f;
@@ -35,6 +37,8 @@
   --merck-bg:#13223f; --merck-border:#3a6cf0; --merck-text:#9bb9ff;
   --book-border:#565b7e;
   --inner-card:#20222f;
+  --table-accent:#b794f6;
+  --table-bg:#241a3a;
 }
 *{box-sizing:border-box;}
 body{
@@ -269,7 +273,7 @@ canvas{ width:100%; background:var(--card); border-radius:12px; border:1.5px sol
 .fl-qt{display:block;font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin-top:2px}
 .fl-r{transition:none}
 .figlab{--ink:var(--text);--line:var(--border);--surface:var(--card);--accent:var(--tc);--hook-bd:#16805a;--hook-bg:var(--inner-card);--hook-ink:var(--text);--trap-bd:#c73551;--trap-ink:var(--text);margin:24px 0;padding:16px;background:var(--inner-card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}
-.figlab h4{margin:0 0 12px}.fl-tools,.fl-chips{margin:12px 0}.bchip,.pearl-list summary{font:inherit;font-size:14px;font-weight:700;color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer}.bchip[aria-pressed=true]{background:var(--tc);color:white}.fl-cap,.simple-figure figcaption{color:var(--muted);font-size:14px;line-height:1.45;font-style:italic;margin:8px 0 12px}.fl-info{padding:12px;border-radius:10px;background:var(--card);border:1px solid var(--border)}.fl-qbar[hidden],.fl-recover[hidden]{display:none}.fl-qbar{margin-top:12px}.fl-pin{display:grid!important}.simple-figure{margin:24px 0;padding:16px;background:var(--inner-card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}.simple-figure img{display:block;max-width:100%;height:auto;margin:auto;background:#fff}.pearl-list{display:flex;flex-wrap:wrap;gap:8px}.pearl-list .pearl-open{flex:1 1 180px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px}.pearl-list .pearl-open>b{display:block;font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}.pearl-list p{font-size:14px;margin:0}.txt-table-wrap{margin:24px 0;padding:16px;background:var(--inner-card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow-x:auto}.txt-table{width:100%;border-collapse:collapse;font-size:14.5px}.txt-table th{text-align:left;font-weight:800;padding:8px 12px;border-bottom:2px solid var(--tc,var(--border));color:var(--text);white-space:nowrap}.txt-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}.txt-table tr:last-child td{border-bottom:0}.txt-table tr:nth-child(even) td{background:var(--card)}.txt-table-cap{color:var(--muted);font-size:14px;line-height:1.45;font-style:italic;margin:10px 0 0}.band{background-image:linear-gradient(125deg,rgba(255,255,255,.12),rgba(0,0,0,.12))!important}.card-sub,.interactive-card{box-shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px -12px rgba(0,0,0,.12)}.reveal.show,.quiz-reveal.show,.gdef.show{animation:rise .35s cubic-bezier(.45,.05,.35,1)}.conf-btn,.sim-readout,.fl-info{transition:background-color .3s ease,transform .3s ease,box-shadow .3s ease}@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+.figlab h4{margin:0 0 12px}.fl-tools,.fl-chips{margin:12px 0}.bchip,.pearl-list summary{font:inherit;font-size:14px;font-weight:700;color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer}.bchip[aria-pressed=true]{background:var(--tc);color:white}.fl-cap,.simple-figure figcaption{color:var(--muted);font-size:14px;line-height:1.45;font-style:italic;margin:8px 0 12px}.fl-info{padding:12px;border-radius:10px;background:var(--card);border:1px solid var(--border)}.fl-qbar[hidden],.fl-recover[hidden]{display:none}.fl-qbar{margin-top:12px}.fl-pin{display:grid!important}.simple-figure{margin:24px 0;padding:16px;background:var(--inner-card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}.simple-figure img{display:block;max-width:100%;height:auto;margin:auto;background:#fff}.pearl-list{display:flex;flex-wrap:wrap;gap:8px}.pearl-list .pearl-open{flex:1 1 180px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px}.pearl-list .pearl-open>b{display:block;font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}.pearl-list p{font-size:14px;margin:0}.txt-table-wrap{margin:24px 0;padding:16px;background:var(--inner-card);border:1px solid var(--border);border-left:5px solid var(--tc,var(--table-accent));border-radius:16px;box-shadow:var(--shadow);overflow-x:auto}.txt-table{width:100%;border-collapse:collapse;font-size:14.5px}.txt-table th{text-align:left;font-weight:800;padding:9px 12px;border-bottom:2px solid var(--tc,var(--table-accent));color:var(--tc,var(--table-accent));background:var(--tc-tint,var(--table-bg));white-space:nowrap}.txt-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}.txt-table tr:last-child td{border-bottom:0}.txt-table tr:nth-child(even) td{background:color-mix(in srgb,var(--tc,var(--table-accent)) 7%,var(--card))}.txt-table-cap{color:var(--muted);font-size:14px;line-height:1.45;font-style:italic;margin:10px 0 0}.band{background-image:linear-gradient(125deg,rgba(255,255,255,.12),rgba(0,0,0,.12))!important}.card-sub,.interactive-card{box-shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px -12px rgba(0,0,0,.12)}.reveal.show,.quiz-reveal.show,.gdef.show{animation:rise .35s cubic-bezier(.45,.05,.35,1)}.conf-btn,.sim-readout,.fl-info{transition:background-color .3s ease,transform .3s ease,box-shadow .3s ease}@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 
 .disease-card{margin:24px 0;padding:18px;background:var(--inner-card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}
 .disease-card h4{margin:0 0 14px;font-size:1.15em}.disease-card dl{margin:0}.disease-card dt{font-weight:700;color:var(--tc);margin:14px 0 4px}.disease-card dd{margin:0;line-height:1.55}.disease-card a{color:var(--tc)}
@@ -853,11 +857,13 @@ body.dark .k-pearl,[data-theme="dark"] .k-pearl{background:#3a3214;color:#f5dd80
 /* mechanism / signaling cascade diagram, shown before the 9 fields */
 .k-casc{margin:2px 0 14px;padding:14px 14px 12px;border-radius:14px;background:var(--k-soft);border:1px solid var(--k-line)}
 .k-casc-h{font-weight:800;font-size:14.5px;margin:0 0 10px;color:var(--k-ink)}
-.k-casc-br{margin:0 0 12px}
-.k-casc-br:last-child{margin-bottom:0}
+.k-casc-branches{display:flex;flex-direction:column;gap:14px}
+.k-casc-branches.multi{flex-direction:row;flex-wrap:wrap;align-items:flex-start}
+.k-casc-branches.multi .k-casc-br{flex:1 1 220px;min-width:200px}
+.k-casc-br{margin:0}
 .k-casc-lbl{font-size:12.5px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:var(--k-muted);margin:0 0 6px}
-.k-casc-flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:4px 2px}
-.k-casc-node{flex:1 1 150px;min-width:132px;max-width:230px;padding:8px 11px;border-radius:12px;border:1.5px solid var(--k-line);background:var(--k-card);display:flex;flex-direction:column;gap:2px}
+.k-casc-flow{display:flex;flex-direction:column;align-items:stretch;gap:2px}
+.k-casc-node{width:100%;max-width:none;padding:9px 12px;border-radius:12px;border:1.5px solid var(--k-line);background:var(--k-card);display:flex;flex-direction:column;gap:2px}
 .k-casc-node b{font-size:14px;line-height:1.25}
 .k-casc-node span{font-size:12.5px;color:var(--k-muted);line-height:1.35}
 .k-casc-node.defect{border-color:#D6324F;background:#FFE3EA;box-shadow:0 0 0 1px #D6324F inset}
@@ -866,8 +872,7 @@ body.dark .k-pearl,[data-theme="dark"] .k-pearl{background:#3a3214;color:#f5dd80
 .k-casc-node.defect span{color:#7A0E24}
 body.dark .k-casc-node.defect,[data-theme="dark"] .k-casc-node.defect{border-color:#F0607A;background:#3D0F1B;box-shadow:0 0 0 1px #F0607A inset}
 body.dark .k-casc-node.defect b,[data-theme="dark"] .k-casc-node.defect b,body.dark .k-casc-node.defect span,[data-theme="dark"] .k-casc-node.defect span{color:#FFB3C3}
-.k-casc-arrow{flex:0 0 auto;align-self:center;font-size:17px;color:var(--k-muted);padding:0 2px}
-@media (max-width:560px){.k-casc-arrow{transform:rotate(90deg);padding:1px 0}.k-casc-flow{flex-direction:column;align-items:stretch}.k-casc-node{max-width:none}}
+.k-casc-arrow{align-self:center;font-size:19px;line-height:1;color:var(--k-muted);padding:2px 0}
 .k-casc-defect{margin-top:10px;padding:9px 12px;border-radius:10px;background:#FFE3EA;border:1.5px solid #D6324F;color:#7A0E24;font-size:14.5px;line-height:1.45}
 .k-casc-defect b{display:inline}
 body.dark .k-casc-defect,[data-theme="dark"] .k-casc-defect{background:#3D0F1B;border-color:#F0607A;color:#FFB3C3}
@@ -1076,11 +1081,12 @@ K.cascadeHTML = function(c){
   var branches = casc.branches.map(function(br){
     var flow = (br.flow || []).map(function(n, i){
       var node = '<div class="k-casc-node' + (n.d ? ' defect' : '') + '"><b>' + esc(n.t) + '</b><span>' + esc(n.r) + '</span></div>';
-      return i === 0 ? node : '<span class="k-casc-arrow" aria-hidden="true">→</span>' + node;
+      return i === 0 ? node : '<span class="k-casc-arrow" aria-hidden="true">↓</span>' + node;
     }).join('');
     return '<div class="k-casc-br">' + (br.label ? '<div class="k-casc-lbl">' + esc(br.label) + '</div>' : '') + '<div class="k-casc-flow">' + flow + '</div></div>';
   }).join('');
-  return '<div class="k-casc"><div class="k-casc-h">🔗 Mechanism chain — where the defect sits</div>' + branches +
+  var multi = casc.branches.length > 1 ? ' multi' : '';
+  return '<div class="k-casc"><div class="k-casc-h">🔗 Mechanism chain — where the defect sits</div><div class="k-casc-branches' + multi + '">' + branches + '</div>' +
     (casc.defect ? '<div class="k-casc-defect"><b>Where it breaks:</b> ' + esc(casc.defect) + '</div>' : '') + '</div>';
 };
 

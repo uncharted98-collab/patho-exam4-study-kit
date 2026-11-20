@@ -111,11 +111,13 @@ body.dark .k-pearl,[data-theme="dark"] .k-pearl{background:#3a3214;color:#f5dd80
 /* mechanism / signaling cascade diagram, shown before the 9 fields */
 .k-casc{margin:2px 0 14px;padding:14px 14px 12px;border-radius:14px;background:var(--k-soft);border:1px solid var(--k-line)}
 .k-casc-h{font-weight:800;font-size:14.5px;margin:0 0 10px;color:var(--k-ink)}
-.k-casc-br{margin:0 0 12px}
-.k-casc-br:last-child{margin-bottom:0}
+.k-casc-branches{display:flex;flex-direction:column;gap:14px}
+.k-casc-branches.multi{flex-direction:row;flex-wrap:wrap;align-items:flex-start}
+.k-casc-branches.multi .k-casc-br{flex:1 1 220px;min-width:200px}
+.k-casc-br{margin:0}
 .k-casc-lbl{font-size:12.5px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:var(--k-muted);margin:0 0 6px}
-.k-casc-flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:4px 2px}
-.k-casc-node{flex:1 1 150px;min-width:132px;max-width:230px;padding:8px 11px;border-radius:12px;border:1.5px solid var(--k-line);background:var(--k-card);display:flex;flex-direction:column;gap:2px}
+.k-casc-flow{display:flex;flex-direction:column;align-items:stretch;gap:2px}
+.k-casc-node{width:100%;max-width:none;padding:9px 12px;border-radius:12px;border:1.5px solid var(--k-line);background:var(--k-card);display:flex;flex-direction:column;gap:2px}
 .k-casc-node b{font-size:14px;line-height:1.25}
 .k-casc-node span{font-size:12.5px;color:var(--k-muted);line-height:1.35}
 .k-casc-node.defect{border-color:#D6324F;background:#FFE3EA;box-shadow:0 0 0 1px #D6324F inset}
@@ -124,8 +126,7 @@ body.dark .k-pearl,[data-theme="dark"] .k-pearl{background:#3a3214;color:#f5dd80
 .k-casc-node.defect span{color:#7A0E24}
 body.dark .k-casc-node.defect,[data-theme="dark"] .k-casc-node.defect{border-color:#F0607A;background:#3D0F1B;box-shadow:0 0 0 1px #F0607A inset}
 body.dark .k-casc-node.defect b,[data-theme="dark"] .k-casc-node.defect b,body.dark .k-casc-node.defect span,[data-theme="dark"] .k-casc-node.defect span{color:#FFB3C3}
-.k-casc-arrow{flex:0 0 auto;align-self:center;font-size:17px;color:var(--k-muted);padding:0 2px}
-@media (max-width:560px){.k-casc-arrow{transform:rotate(90deg);padding:1px 0}.k-casc-flow{flex-direction:column;align-items:stretch}.k-casc-node{max-width:none}}
+.k-casc-arrow{align-self:center;font-size:19px;line-height:1;color:var(--k-muted);padding:2px 0}
 .k-casc-defect{margin-top:10px;padding:9px 12px;border-radius:10px;background:#FFE3EA;border:1.5px solid #D6324F;color:#7A0E24;font-size:14.5px;line-height:1.45}
 .k-casc-defect b{display:inline}
 body.dark .k-casc-defect,[data-theme="dark"] .k-casc-defect{background:#3D0F1B;border-color:#F0607A;color:#FFB3C3}
@@ -334,11 +335,12 @@ K.cascadeHTML = function(c){
   var branches = casc.branches.map(function(br){
     var flow = (br.flow || []).map(function(n, i){
       var node = '<div class="k-casc-node' + (n.d ? ' defect' : '') + '"><b>' + esc(n.t) + '</b><span>' + esc(n.r) + '</span></div>';
-      return i === 0 ? node : '<span class="k-casc-arrow" aria-hidden="true">→</span>' + node;
+      return i === 0 ? node : '<span class="k-casc-arrow" aria-hidden="true">↓</span>' + node;
     }).join('');
     return '<div class="k-casc-br">' + (br.label ? '<div class="k-casc-lbl">' + esc(br.label) + '</div>' : '') + '<div class="k-casc-flow">' + flow + '</div></div>';
   }).join('');
-  return '<div class="k-casc"><div class="k-casc-h">🔗 Mechanism chain — where the defect sits</div>' + branches +
+  var multi = casc.branches.length > 1 ? ' multi' : '';
+  return '<div class="k-casc"><div class="k-casc-h">🔗 Mechanism chain — where the defect sits</div><div class="k-casc-branches' + multi + '">' + branches + '</div>' +
     (casc.defect ? '<div class="k-casc-defect"><b>Where it breaks:</b> ' + esc(casc.defect) + '</div>' : '') + '</div>';
 };
 

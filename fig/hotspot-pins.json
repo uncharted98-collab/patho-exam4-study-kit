@@ -1,0 +1,122 @@
+{
+  "notes": "Coordinates are percent of image width/height (0-100), top-left origin, for absolutely-positioned pin markers over a responsive <img>. Use left:X%; top:Y%; transform:translate(-50%,-50%). Pin = small numbered circle; tap/click reveals a callout with the structure name + the clinical-tie-in text below. Keep the real printed label visible on the image itself (these textbook figures are pre-labeled) — the pin's reveal content should ADD pathophysiology context, not just repeat the name.",
+  "ch12": {
+    "fig12_1_neuron_pathway": {
+      "file": "fig/ch12/image3.png",
+      "caption": "Figure 12.1. Arrangement of first-, second-, and third-order neurons of the somatosensory system.",
+      "pins": [
+        {"label": "Receptors", "x": 14, "y": 88, "note": "Free nerve endings or specialized receptors transduce a stimulus (touch, temp, pain) into an electrical signal — the first step in somatosensation."},
+        {"label": "First-order neuron", "x": 18, "y": 72, "note": "Carries the signal from the receptor into the spinal cord; cell body sits in the dorsal root ganglion."},
+        {"label": "Spinal cord", "x": 42, "y": 80, "note": "First-order neuron synapses here (or travels up ipsilaterally in the dorsal columns before synapsing in the medulla, depending on the pathway)."},
+        {"label": "Second-order neuron", "x": 30, "y": 55, "note": "Crosses (decussates) to the opposite side and ascends to the thalamus — this is why a spinal cord lesion on one side can cause sensory loss on the other side below the lesion."},
+        {"label": "Thalamus (shown in purple)", "x": 54, "y": 38, "note": "The sensory relay station of the brain. Thalamic stroke/damage can cause thalamic pain syndrome — severe, poorly controlled pain on the opposite body side."},
+        {"label": "Third-order neuron", "x": 52, "y": 18, "note": "Carries the signal from thalamus to cortex — the final relay before conscious perception."},
+        {"label": "Primary somatosensory cortex", "x": 68, "y": 8, "note": "Postcentral gyrus. This is where the stimulus becomes a conscious, localized sensation — damage here causes loss of fine touch discrimination without losing pain sensation."}
+      ]
+    },
+    "fig12_3_pain_mechanism": {
+      "file": "fig/ch12/image5.png",
+      "caption": "Figure 12.3. Mechanism of acute pain.",
+      "pins": [
+        {"label": "Tissue injury", "x": 10, "y": 95, "note": "The triggering event — cell damage releases intracellular contents and triggers the inflammatory cascade."},
+        {"label": "Inflammation", "x": 10, "y": 87, "note": "Inflammatory cells and chemicals accumulate at the injury site, sensitizing nociceptors (peripheral sensitization)."},
+        {"label": "Mediator release", "x": 12, "y": 76, "note": "Substance P, prostaglandins, serotonin, and acetylcholine directly stimulate or sensitize nociceptors. NSAIDs work by blocking prostaglandin synthesis here."},
+        {"label": "Receptors (nociceptors)", "x": 6, "y": 62, "note": "Free nerve endings that specifically respond to noxious (tissue-damaging) stimuli."},
+        {"label": "Spinothalamic pathway", "x": 55, "y": 52, "note": "The ascending pain pathway — crosses in the spinal cord then ascends contralaterally to the thalamus."},
+        {"label": "RAS (reticular activating system)", "x": 40, "y": 37, "note": "Pain signals passing through here trigger arousal/alertness — why pain keeps you awake and focused on the threat."},
+        {"label": "Thalamus", "x": 70, "y": 37, "note": "Relays the pain signal onward and contributes to the emotional/autonomic response to pain."},
+        {"label": "Primary somatosensory cortex", "x": 62, "y": 10, "note": "Where pain becomes consciously localized ('my hand hurts') rather than just a diffuse unpleasant feeling."},
+        {"label": "Pain (conscious perception)", "x": 48, "y": 3, "note": "The endpoint — note that everything before this is nociception (signal transmission); 'pain' itself is the subjective, conscious experience."}
+      ]
+    },
+    "fig12_5_eye_structures": {
+      "file": "fig/ch12/image7.png",
+      "caption": "Figure 12.5. Structures of the eye.",
+      "pins": [
+        {"label": "Cornea", "x": 28, "y": 50, "note": "Avascular, transparent — does most of the eye's light bending (refraction). Corneal abrasion is intensely painful because it's densely innervated."},
+        {"label": "Anterior chamber", "x": 32, "y": 55, "note": "Between cornea and iris, filled with aqueous humor. Where intraocular pressure is measured (tonometry)."},
+        {"label": "Iris", "x": 33, "y": 40, "note": "The colored muscular diaphragm; controls pupil size via sphincter (parasympathetic/miosis) and dilator (sympathetic/mydriasis) muscles."},
+        {"label": "Pupil", "x": 34, "y": 50, "note": "The opening in the iris — not a structure itself, just the hole light passes through."},
+        {"label": "Posterior chamber", "x": 34, "y": 60, "note": "Between iris and lens, where aqueous humor is actually produced by the ciliary body before flowing into the anterior chamber."},
+        {"label": "Lens", "x": 37, "y": 48, "note": "Changes shape (via ciliary muscle) to focus light on the retina — accommodation. Loses elasticity with age (presbyopia) or clouds (cataract)."},
+        {"label": "Ciliary muscle", "x": 38, "y": 68, "note": "Contracts to round the lens for near vision (accommodation) and produces aqueous humor. Also the site aqueous drains near in open-angle glaucoma."},
+        {"label": "Vitreous humor", "x": 55, "y": 58, "note": "Gel that fills the posterior cavity and maintains the eyeball's shape; does NOT recirculate like aqueous humor does."},
+        {"label": "Retina", "x": 72, "y": 15, "note": "Contains rods (dim light, peripheral) and cones (color, central). Detached retina = painless vision loss, an emergency."},
+        {"label": "Fovea", "x": 72, "y": 48, "note": "Center of the macula, cone-only, sharpest central vision — this is what's lost first in macular degeneration."},
+        {"label": "Optic disk", "x": 80, "y": 52, "note": "Where the optic nerve exits — has NO photoreceptors, so it's the physiologic 'blind spot.' Also where you look for papilledema/cupping (glaucoma)."},
+        {"label": "Optic nerve", "x": 88, "y": 62, "note": "Cranial nerve II — carries the visual signal to the brain. Glaucoma causes progressive, irreversible optic nerve damage from sustained pressure."}
+      ]
+    },
+    "fig12_7_extraocular_muscles": {
+      "file": "fig/ch12/image9.png",
+      "caption": "Figure 12.7. Extraocular eye muscles.",
+      "pins": [
+        {"label": "Superior rectus", "x": 78, "y": 32, "note": "CN III (oculomotor) — elevates the eye."},
+        {"label": "Superior oblique", "x": 78, "y": 42, "note": "CN IV (trochlear) — the only muscle that passes through a pulley (trochlea); depresses and intorts the eye when it's turned inward."},
+        {"label": "Medial rectus", "x": 72, "y": 52, "note": "CN III — adducts the eye (turns it toward the nose). Weakness here causes an exotropia (eye drifts outward)."},
+        {"label": "Lateral rectus", "x": 66, "y": 63, "note": "CN VI (abducens) — abducts the eye (turns it toward the ear). CN VI palsy causes an esotropia (eye drifts inward) and double vision."},
+        {"label": "Inferior rectus", "x": 60, "y": 76, "note": "CN III — depresses the eye."},
+        {"label": "Inferior oblique", "x": 48, "y": 90, "note": "CN III — elevates and extorts the eye when turned inward; the only extraocular muscle that originates from the front of the orbit, not the back."}
+      ]
+    },
+    "fig12_11_ear_structures": {
+      "file": "fig/ch12/image14.png",
+      "caption": "Figure 12.11. Structures of the external, middle, and internal ear.",
+      "pins": [
+        {"label": "Auricle (pinna)", "x": 16, "y": 26, "note": "Collects and funnels sound waves into the canal — purely external, cartilage-supported."},
+        {"label": "External acoustic meatus", "x": 23, "y": 55, "note": "The ear canal; cerumen (wax) here can impact and cause conductive hearing loss."},
+        {"label": "Tympanic membrane (eardrum)", "x": 38, "y": 57, "note": "Vibrates in response to sound pressure waves; what you see (bulging, red, perforated) on otoscopic exam."},
+        {"label": "Malleus", "x": 44, "y": 30, "note": "First and largest ossicle, attached directly to the eardrum."},
+        {"label": "Incus", "x": 48, "y": 26, "note": "Middle ossicle, bridges malleus and stapes."},
+        {"label": "Stapes", "x": 53, "y": 22, "note": "Smallest bone in the body; its footplate sits in the oval window and transmits vibration into the fluid-filled inner ear."},
+        {"label": "Semicircular canals", "x": 68, "y": 20, "note": "Detect rotational head movement — part of the vestibular (balance) system, not hearing."},
+        {"label": "Cochlea", "x": 72, "y": 46, "note": "Snail-shaped, fluid-filled; contains the organ of Corti where hair cells convert sound vibration into neural signal."},
+        {"label": "Vestibule", "x": 65, "y": 36, "note": "Contains the utricle and saccule — sense linear acceleration and head position relative to gravity."},
+        {"label": "Auditory (eustachian) tube", "x": 68, "y": 75, "note": "Connects middle ear to the nasopharynx; equalizes pressure. Dysfunction (common with colds, in children) causes otitis media with effusion."}
+      ]
+    }
+  },
+  "ch13": {
+    "fig13_2_hpa_axis": {
+      "file": "fig/ch13/image3.png",
+      "caption": "Figure 13.2. The hypothalamic\u2013pituitary axis regulates the release of hormones.",
+      "pins": [
+        {"label": "Hypothalamus", "x": 55, "y": 14, "note": "The master coordinator — integrates neural input (stimuli, neurotransmitters) and translates it into releasing/inhibiting hormones."},
+        {"label": "Releasing hormones (TRH, CRH, GnRH, GHRH)", "x": 30, "y": 20, "note": "Travel a tiny distance via the hypophyseal portal system directly to the anterior pituitary — not general circulation, so very small amounts have big effects."},
+        {"label": "Posterior pituitary", "x": 70, "y": 30, "note": "Not a true endocrine gland — it just STORES and releases ADH and oxytocin that were made in the hypothalamus and travel down the nerve axons."},
+        {"label": "ADH and oxytocin", "x": 60, "y": 22, "note": "Made in hypothalamic neurons, transported down axons, stored in the posterior pituitary until release."},
+        {"label": "Anterior pituitary", "x": 48, "y": 42, "note": "True endocrine tissue — synthesizes and secretes its own tropic hormones in response to hypothalamic releasing hormones."},
+        {"label": "TSH \u2192 Thyroid gland", "x": 52, "y": 60, "note": "Stimulates the thyroid to release T3/T4, which then negatively feedback on both the pituitary and hypothalamus."},
+        {"label": "ACTH \u2192 Adrenal gland", "x": 62, "y": 62, "note": "Stimulates cortisol release from the adrenal cortex — the core of the stress response axis."},
+        {"label": "FSH/LH \u2192 Ovary/Testes", "x": 32, "y": 62, "note": "Drives estrogen/testosterone production and the reproductive cycle."},
+        {"label": "Prolactin \u2192 Breast", "x": 72, "y": 60, "note": "Stimulates milk production; unlike other anterior pituitary hormones it's under tonic DOPAMINE INHIBITION rather than a releasing hormone — a dopamine-blocking drug can cause galactorrhea."},
+        {"label": "Growth hormone \u2192 Bone and soft tissue", "x": 85, "y": 55, "note": "Promotes growth via IGF-1 from the liver; excess in adults causes acromegaly, excess in children causes gigantism."}
+      ]
+    },
+    "fig13_8_stress_response": {
+      "file": "fig/ch13/image9.png",
+      "caption": "Figure 13.8. Stimulation of cortisol and catecholamines in the stress response.",
+      "pins": [
+        {"label": "Hypothalamus", "x": 65, "y": 18, "note": "Senses the stressor and starts the cascade by releasing CRH."},
+        {"label": "CRH", "x": 68, "y": 32, "note": "Corticotropin-releasing hormone travels to the anterior pituitary."},
+        {"label": "Pituitary \u2192 ACTH", "x": 55, "y": 45, "note": "Anterior pituitary releases ACTH into systemic circulation."},
+        {"label": "Adrenal medulla \u2192 Catecholamines", "x": 78, "y": 28, "note": "The brainstem/sympathetic pathway directly stimulates the adrenal medulla to dump epinephrine/norepinephrine — this is the FAST, seconds-scale fight-or-flight response, parallel to the slower hormonal cortisol pathway."},
+        {"label": "Adrenal cortex \u2192 Cortisol", "x": 25, "y": 65, "note": "ACTH stimulates the adrenal cortex to release cortisol — the SLOW, minutes-to-hours stress hormone that mobilizes glucose and suppresses inflammation/immunity."},
+        {"label": "Autonomic nervous system manifestations", "x": 78, "y": 82, "note": "Tachycardia, diaphoresis, pupil dilation — the visible signs of the fast catecholamine pathway, distinct from cortisol's metabolic effects."}
+      ]
+    },
+    "fig13_10_diabetes_insipidus": {
+      "file": "fig/ch13/image12.png",
+      "caption": "Figure 13.10. The mechanism of diabetes insipidus.",
+      "pins": [
+        {"label": "Anterior / Posterior pituitary", "x": 50, "y": 10, "note": "Central DI = the posterior pituitary (or hypothalamus) fails to make/release ADH. Nephrogenic DI = ADH is present but the kidney doesn't respond to it — same downstream picture, different cause."},
+        {"label": "ADH deficiency", "x": 68, "y": 28, "note": "Without ADH, the collecting duct's aquaporin water channels aren't inserted, so water can't be reabsorbed back into the blood."},
+        {"label": "Collecting duct", "x": 55, "y": 48, "note": "Normally the site where ADH makes the duct permeable to water, concentrating urine. In DI it stays impermeable."},
+        {"label": "Impaired water reabsorption", "x": 55, "y": 58, "note": "Water that should be pulled back into the bloodstream instead stays in the tubule and is lost as urine."},
+        {"label": "Decreased renal water reabsorption", "x": 35, "y": 70, "note": "The net kidney-level consequence — massive water loss in the urine."},
+        {"label": "Inappropriately dilute urine", "x": 35, "y": 82, "note": "The key diagnostic clue: urine that is dilute (low specific gravity) despite the patient being dehydrated/hypernatremic — urine should be concentrated in true dehydration, so dilute urine here is 'inappropriate.'"},
+        {"label": "Diabetes insipidus: polyuria, polydipsia", "x": 35, "y": 94, "note": "Massive dilute urine output (polyuria) drives compensatory extreme thirst (polydipsia). Contrast with diabetes MELLITUS, where polyuria is from glucose osmotic diuresis, not ADH failure."}
+      ]
+    }
+  }
+}

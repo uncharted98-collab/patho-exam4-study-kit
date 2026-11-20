@@ -1,0 +1,135 @@
+[
+  {
+    "name": "image1",
+    "file": "image1.png",
+    "size": 101887,
+    "figure": null,
+    "caption": null
+  },
+  {
+    "name": "image2",
+    "file": "image2.png",
+    "size": 210505,
+    "figure": "Figure 13.1",
+    "caption": "Organs of the endocrine system. (Courtesy of Anatomical Chart Company.)"
+  },
+  {
+    "name": "image3",
+    "file": "image3.png",
+    "size": 177667,
+    "figure": "Figure 13.2",
+    "caption": "The hypothalamic\u2013pituitary axis regulates the release of hormones."
+  },
+  {
+    "name": "image4",
+    "file": "image4.png",
+    "size": 120182,
+    "figure": "Figure 13.3",
+    "caption": "An example of negative feedback. Circulating thyroid hormone (TH) levels (T3 \\+ T4) alert the hypothalamus and anterior pituitary to increase or decrease thyrotropin-releasing hormone (TRH) and thyroid-stimulating hormone (TSH) secretion."
+  },
+  {
+    "name": "image5",
+    "file": "image5.png",
+    "size": 126009,
+    "figure": "Figure 13.4",
+    "caption": "An example of positive feedback. Oxytocin levels during labor and delivery increase release of additional oxytocin until the birth of the baby, which decreases stretching of the cervix and the cycle is interrupted."
+  },
+  {
+    "name": "image6",
+    "file": "image6.png",
+    "size": 158298,
+    "figure": "Figure 13.5",
+    "caption": "Two types of hormone\u2013receptor interactions: (A) the surface receptor and (B) the intracellular receptor."
+  },
+  {
+    "name": "image7",
+    "file": "image7.png",
+    "size": 144993,
+    "figure": "Figure 13.6",
+    "caption": "Hormonal mechanisms of mediating cell-to-cell communication. **A.**Paracrine pathway. **B.**Autocrine pathway. **C.**Endocrine pathway. **D.**Synaptic pathway. **E.**Neuroendocrine pathway."
+  },
+  {
+    "name": "image8",
+    "file": "image8.png",
+    "size": 104537,
+    "figure": "Figure 13.7",
+    "caption": "Stress pathways concept map. The *broken line* represents negative feedback."
+  },
+  {
+    "name": "image9",
+    "file": "image9.png",
+    "size": 150536,
+    "figure": "Figure 13.8",
+    "caption": "Stimulation of cortisol and catecholamines in the stress response. ACTH, adrenocorticotropic hormone; CRH, corticotropin-releasing hormone."
+  },
+  {
+    "name": "image10",
+    "file": "image10.png",
+    "size": 113676,
+    "figure": null,
+    "caption": null
+  },
+  {
+    "name": "image11",
+    "file": "image11.png",
+    "size": 180105,
+    "figure": "Figure 13.9",
+    "caption": "Pathways for regulation of extracellular fluid volume by thirst and antidiuretic hormone. ADH, antidiuretic hormone."
+  },
+  {
+    "name": "image12",
+    "file": "image12.png",
+    "size": 118733,
+    "figure": "Figure 13.10",
+    "caption": "The mechanism of diabetes insipidus. ADH, antidiuretic hormone."
+  },
+  {
+    "name": "image13",
+    "file": "image13.png",
+    "size": 260922,
+    "figure": "Figure 13.11",
+    "caption": "Graves disease. A young woman with hyperthyroidism presented with a mass in the neck and exophthalmos."
+  },
+  {
+    "name": "image14",
+    "file": "image14.png",
+    "size": 210612,
+    "figure": "Figure 13.12",
+    "caption": "Clinical manifestations of hypothyroidism. (Reprinted with permission from Porth, C. (2014). *Essentials of pathophysiology* (4th ed.). Wolters Kluwer, with permission.)"
+  },
+  {
+    "name": "image15",
+    "file": "image15.png",
+    "size": 153352,
+    "figure": "Figure 13.13",
+    "caption": "The adrenal glands are positioned above each kidney and have an outer adrenal cortex and an inner adrenal medulla. Hormones from the adrenal cortex include mineralocorticoids, glucocorticoids, androgens, and estrogens. Hormones from the adrenal medulla are epinephrine and norepinephrine. (Courtesy of Dr. Judi Nath.)"
+  },
+  {
+    "name": "image16",
+    "file": "image16.png",
+    "size": 41718,
+    "figure": null,
+    "caption": null
+  },
+  {
+    "name": "image17",
+    "file": "image17.png",
+    "size": 138232,
+    "figure": "Figure 13.14",
+    "caption": "Dominant features of Cushing syndrome."
+  },
+  {
+    "name": "image18",
+    "file": "image18.png",
+    "size": 77282,
+    "figure": "Figure 13.15",
+    "caption": "Darkening of skin caused by Addison disease. (Courtesy of Dr. Judi Nath.)"
+  },
+  {
+    "name": "image19",
+    "file": "image19.png",
+    "size": 813038,
+    "figure": "Figure 13.15",
+    "caption": "Darkening of skin caused by Addison disease. (Courtesy of Dr. Judi Nath.)"
+  }
+]

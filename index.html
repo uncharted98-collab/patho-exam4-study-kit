@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Patho Exam 4 · Study Guides</title>
+<style>
+  :root{
+    color-scheme:light dark;
+    --bg:#f5f6f8; --surface:#ffffff; --line:#d9dde3; --text:#15181d; --muted:#5a636e;
+    --accent:#2457c5; --accent-soft:#e6edfb; --c12:#c2410c; --c12-soft:#fdeee5; --c13:#0f766e; --c13-soft:#e2f4f1; --c14:#be185d; --c14-soft:#fce7f1; --c19:#6d28d9; --c19-soft:#efe9fd;
+    --shadow:0 1px 2px rgba(16,24,40,.06),0 6px 20px rgba(16,24,40,.08);
+    --ease:cubic-bezier(0.16,1,0.3,1);
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#0f1115; --surface:#181c23; --line:#2c323b; --text:#eef1f4; --muted:#a1aab4;
+    --accent:#7aa7ff; --accent-soft:#1d2a44; --c12:#fb923c; --c12-soft:#33231a; --c13:#2dd4bf; --c13-soft:#14302c; --c14:#f472b6; --c14-soft:#3a1a2b; --c19:#a78bfa; --c19-soft:#251d3d;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+  }}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:16px;line-height:1.5}
+  ::selection{background:var(--accent-soft)}
+  button{font:inherit;color:inherit}
+  :focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:8px}
+
+  /* ---------- picker ---------- */
+  #picker{min-height:100%;display:flex;align-items:center;justify-content:center;padding:32px 20px}
+  #picker[hidden]{display:none}
+  .wrap{width:100%;max-width:860px}
+  h1{font-size:1.9rem;line-height:1.2;margin:0 0 6px;letter-spacing:-0.02em}
+  .sub{color:var(--muted);margin:0 0 28px;max-width:62ch}
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media (max-width:680px){.choices{grid-template-columns:1fr}}
+  .choice{position:relative;display:flex;flex-direction:column;gap:10px;text-align:left;cursor:pointer;
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 22px 20px;box-shadow:var(--shadow);
+    transition:transform .2s var(--ease),border-color .2s var(--ease)}
+  .choice:hover{transform:translateY(-2px);border-color:var(--ch)}
+  .choice:active{transform:translateY(0)}
+  .choice[data-ch="ch12"]{--ch:var(--c12);--ch-soft:var(--c12-soft)}
+  .choice[data-ch="ch13"]{--ch:var(--c13);--ch-soft:var(--c13-soft)}
+  .choice[data-ch="ch14"]{--ch:var(--c14);--ch-soft:var(--c14-soft)}
+  .choice[data-ch="ch19"]{--ch:var(--c19);--ch-soft:var(--c19-soft)}
+  .chip{align-self:flex-start;font-size:.8rem;font-weight:650;color:var(--ch);background:var(--ch-soft);padding:3px 10px;border-radius:999px}
+  .choice h2{margin:0;font-size:1.3rem;line-height:1.25}
+  .choice p{margin:0;color:var(--muted);font-size:.95rem}
+  .choice ul{margin:0;padding-left:18px;font-size:.92rem}
+  .choice li{margin:2px 0}
+  .open{margin-top:6px;display:inline-flex;align-items:center;gap:6px;font-weight:650;color:var(--ch)}
+  .open svg{transition:transform .2s var(--ease)}
+  .choice:hover .open svg{transform:translateX(3px)}
+  .last{position:absolute;top:20px;right:20px;font-size:.78rem;color:var(--muted)}
+  .last[hidden]{display:none}
+  .foot{margin-top:24px;color:var(--muted);font-size:.88rem}
+
+  /* ---------- reader ---------- */
+  #reader{position:fixed;inset:0;display:flex;flex-direction:column}
+  #reader[hidden]{display:none}
+  .bar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:8px 12px;min-height:52px;
+    background:var(--surface);border-bottom:1px solid var(--line)}
+  .back{display:inline-flex;align-items:center;gap:6px;padding:7px 12px 7px 8px;border-radius:10px;border:1px solid var(--line);
+    background:transparent;cursor:pointer;font-weight:600;font-size:.92rem;white-space:nowrap}
+  .back:hover{background:var(--accent-soft);border-color:var(--accent)}
+  .seg{display:flex;gap:4px;padding:3px;border-radius:12px;background:var(--bg);border:1px solid var(--line);margin:0 auto;min-width:0;max-width:100%;overflow-x:auto;scrollbar-width:none}
+  .seg::-webkit-scrollbar{display:none}
+  @media (max-width:480px){.seg button{padding:6px 8px!important;font-size:.84rem!important}}
+  .seg button{border:0;background:transparent;padding:6px 14px;border-radius:9px;cursor:pointer;font-size:.92rem;font-weight:600;color:var(--muted);white-space:nowrap;
+    transition:background .15s var(--ease),color .15s var(--ease)}
+  .seg button:hover{color:var(--text)}
+  .seg button[aria-pressed="true"]{background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+  .seg button[data-ch="ch12"][aria-pressed="true"]{color:var(--c12)}
+  .seg button[data-ch="ch13"][aria-pressed="true"]{color:var(--c13)}
+  .seg button[data-ch="ch14"][aria-pressed="true"]{color:var(--c14)}
+  .seg button[data-ch="ch19"][aria-pressed="true"]{color:var(--c19)}
+  .spacer{width:132px;flex:0 0 auto}
+  @media (max-width:600px){.long{display:none}.spacer{display:none}.seg{margin-right:0}}
+  .frames{position:relative;flex:1 1 auto;min-height:0}
+  .frames iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--bg)}
+  .frames iframe[hidden]{display:none}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style id="phone">/* phone.css: shared phone fixes injected into every Exam 4 page (DESIGN.md §phone:
+   body ≥16px, tap targets ≥44px, no sideways page scroll). Layout-neutral where possible:
+   tiny targets that sit on figures or inside sentences get an invisible enlarged hit area
+   instead of a bigger box. */
+body { overflow-wrap: break-word; }
+@media (max-width: 640px), (pointer: coarse) {
+  /* 1. Real controls: at least 44px tall */
+  button:not(.figl):not(.fl-pin):not(.gterm):not(.term):not(.k-tag):not(.pc),
+  .btn, .k-btn, a.chip, a.k-btn, .bchip, .conf-btn, .studied-pill, .tbtn, .lvpill, .brand,
+  summary, select, label.tog, .chip[role="button"], button.chip {
+    min-height: 44px;
+  }
+  summary { display: flex; align-items: center; }
+  details > summary { display: list-item; padding-top: 10px; padding-bottom: 10px; }
+  input[type="range"] { min-height: 44px !important; }
+  label:has(input[type="checkbox"]), label:has(input[type="radio"]) { min-height: 44px; display: inline-flex; align-items: center; }
+  input[type="checkbox"], input[type="radio"] { width: 22px; height: 22px; }
+
+  /* 2. Small targets that must keep their size: enlarge the hit area only */
+  .figl, .gterm, .term, a.k-tag, .pc { position: relative; }
+  .fl-pin::after, .figl::after, .gterm::after, .term::after, a.k-tag::after, .pc::after {
+    content: ""; position: absolute; left: 50%; top: 50%;
+    width: max(100%, 44px); height: max(100%, 44px); transform: translate(-50%, -50%);
+  }
+  .fl-pin { overflow: visible; }
+
+  /* 3. Reading text: at least 16px */
+  p:not(.simnote):not(.meta):not(.small):not(.foot):not(.note):not(.sub),
+  li, td, dd, summary, .lt-why, .read, .fv, .nd, .bigidea {
+    font-size: max(16px, 1em) !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<main id="picker" aria-labelledby="pick-title">
+  <div class="wrap">
+    <h1 id="pick-title">Patho Exam 4 study guides</h1>
+    <p class="sub">Pick a chapter or the quiz. Inside, the bar at the top switches between them or brings you back here, and each one keeps your place.</p>
+    <div class="choices">
+      <button class="choice" data-ch="ch12" type="button">
+        <span class="last" hidden>Last opened</span>
+        <span class="chip">Chapter 12</span>
+        <h2>Somatic &amp; Special Sensory</h2>
+        <p>Pain, vision and hearing, with textbook figures, interactive labs and 11 disease cards.</p>
+        <ul>
+          <li>Pain pathways and gate control</li>
+          <li>Refraction, glaucoma, cataract, macular degeneration</li>
+          <li>Otitis media and externa, Ménière, otosclerosis</li>
+          <li>Migraine and fibromyalgia</li>
+        </ul>
+        <span class="open">Open Chapter 12 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+      <button class="choice" data-ch="ch13" type="button">
+        <span class="last" hidden>Last opened</span>
+        <span class="chip">Chapter 13</span>
+        <h2>Hormonal &amp; Metabolic</h2>
+        <p>Hormone axes and the stress response, with interactive labs and 6 disease cards.</p>
+        <ul>
+          <li>Hypothalamic–pituitary axes</li>
+          <li>Stress response, cortisol and catecholamines</li>
+          <li>SIADH and diabetes insipidus</li>
+          <li>Graves, Hashimoto, Cushing, Addison</li>
+        </ul>
+        <span class="open">Open Chapter 13 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+      <button class="choice" data-ch="ch14" type="button">
+        <span class="last" hidden>Last opened</span>
+        <span class="chip">Chapter 14</span>
+        <h2>Altered Reproductive Function</h2>
+        <p>The cycle, hormone feedback and female and male disorders, with 5 interactive labs and 11 disease cards.</p>
+        <ul>
+          <li>28-day cycle lab and the hormone thermostat (menopause, PCOS)</li>
+          <li>BPH retention lab and the PDE5 + nitrate crash</li>
+          <li>Endometriosis, PID, ovarian, prostate and testicular cancer</li>
+          <li>10 NCLEX items, 40 flashcards, matching and order games</li>
+        </ul>
+        <span class="open">Open Chapter 14 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+      <button class="choice" data-ch="ch19" type="button">
+        <span class="last" hidden>Last opened</span>
+        <span class="chip">Chapter 19</span>
+        <h2>Degenerative Changes in Aging</h2>
+        <p>Theories of aging, body-system changes, osteoporosis, Alzheimer disease and progeria, with 5 interactive labs.</p>
+        <ul>
+          <li>Bone bank + DEXA T-score lab</li>
+          <li>Heat wave lab, drug build-up lab, telomere countdown</li>
+          <li>Fall-proof-the-room game</li>
+          <li>10 NCLEX items, 41 flashcards, sorting and matching games</li>
+        </ul>
+        <span class="open">Open Chapter 19 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+      <button class="choice" data-ch="quiz" type="button">
+        <span class="last" hidden>Last opened</span>
+        <span class="chip">Quiz</span>
+        <h2>Exam 4 quiz app</h2>
+        <p>142 NCLEX-style questions from both chapters, including all 29 end-of-chapter book questions, 32 select-all and 14 patient cases.</p>
+        <ul>
+          <li>Every answer shows the book line it comes from</li>
+          <li>Levels, XP, bosses and unlockable skins</li>
+          <li>188 spaced-repetition flashcards</li>
+        </ul>
+        <span class="open">Open the quiz <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+    </div>
+    <p class="foot">Works offline from this folder. No server needed.</p>
+  </div>
+</main>
+
+<div id="reader" hidden>
+  <nav class="bar" aria-label="Study guide navigation">
+    <button class="back" id="back" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      <span>All<span class="long"> chapters</span></span>
+    </button>
+    <div class="seg" role="group" aria-label="Switch chapter or quiz">
+      <button type="button" data-ch="ch12" aria-pressed="false">Ch 12<span class="long"> · Sensory</span></button>
+      <button type="button" data-ch="ch13" aria-pressed="false">Ch 13<span class="long"> · Hormonal</span></button>
+      <button type="button" data-ch="ch14" aria-pressed="false">Ch 14<span class="long"> · Reproductive</span></button>
+      <button type="button" data-ch="ch19" aria-pressed="false">Ch 19<span class="long"> · Aging</span></button>
+      <button type="button" data-ch="quiz" aria-pressed="false">Quiz</button>
+    </div>
+    <span class="spacer" aria-hidden="true"></span>
+  </nav>
+  <div class="frames">
+    <iframe id="f-ch12" title="Chapter 12: Somatic and Special Sensory study guide" data-src="ch12-somatic-sensory.html" hidden></iframe>
+    <iframe id="f-ch13" title="Chapter 13: Hormonal and Metabolic study guide" data-src="ch13-hormonal-metabolic.html" hidden></iframe>
+    <iframe id="f-ch14" title="Chapter 14: Altered Reproductive Function study guide" data-src="ch14-reproductive.html" hidden></iframe>
+    <iframe id="f-ch19" title="Chapter 19: Degenerative Changes in Aging study guide" data-src="ch19-aging.html" hidden></iframe>
+    <iframe id="f-quiz" title="Exam 4 quiz app" data-src="exam4-quiz.html" hidden></iframe>
+  </div>
+</div>
+
+<script>
+(function(){
+  const CH = ['ch12','ch13','ch14','ch19','quiz'];
+  const TITLES = {ch12:'Ch 12 · Somatic & Special Sensory', ch13:'Ch 13 · Hormonal & Metabolic', ch14:'Ch 14 · Altered Reproductive Function', ch19:'Ch 19 · Degenerative Changes in Aging', quiz:'Exam 4 Quiz'};
+  const picker = document.getElementById('picker'), reader = document.getElementById('reader');
+  const segBtns = [...document.querySelectorAll('.seg button')];
+  const store = { get(){ try{return localStorage.getItem('exam4-last')}catch(e){return null} },
+                  set(v){ try{localStorage.setItem('exam4-last', v)}catch(e){} } };
+  let wasReading = false;
+
+  function show(){
+    const ch = location.hash.slice(1);
+    if (!CH.includes(ch)) {                                   // chapter picker
+      reader.hidden = true; picker.hidden = false;
+      document.title = 'Patho Exam 4 · Study Guides';
+      const last = store.get();
+      document.querySelectorAll('.choice').forEach(c => { c.querySelector('.last').hidden = c.dataset.ch !== last; });
+      if (wasReading) { const t = document.querySelector('.choice[data-ch="'+(last||'ch12')+'"]'); t && t.focus(); }
+      wasReading = false;
+      return;
+    }
+    wasReading = true;
+    picker.hidden = true; reader.hidden = false;
+    CH.forEach(id => {
+      const f = document.getElementById('f-'+id);
+      if (id === ch && !f.getAttribute('src')) f.src = f.dataset.src;   // load once; switching back keeps your scroll spot
+      f.hidden = id !== ch;
+    });
+    segBtns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ch === ch)));
+    document.title = TITLES[ch] + ' · Patho Exam 4';
+    store.set(ch);
+  }
+  function go(ch){
+    if (ch) { location.hash = ch; }                                       // fires hashchange -> show()
+    else { history.pushState(null, '', location.pathname + location.search); show(); }
+  }
+
+  document.querySelectorAll('.choice').forEach(c => c.addEventListener('click', () => go(c.dataset.ch)));
+  segBtns.forEach(b => b.addEventListener('click', () => { if (b.getAttribute('aria-pressed') !== 'true') go(b.dataset.ch); }));
+  document.getElementById('back').addEventListener('click', () => go(''));
+  window.addEventListener('hashchange', show);
+  window.addEventListener('popstate', show);
+  show();
+})();
+</script>
+</body>
+</html>

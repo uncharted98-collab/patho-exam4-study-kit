@@ -423,12 +423,17 @@ CHIDS.concat('all').forEach(function(id){
     badge:[String(bd[0] || (all ? 'Professor beaten' : 'Ch ' + id + ' boss beaten')), String(bd[1] || 'Defeat ' + name + (all ? ' (all chapters)' : ' (Ch ' + id + ')'))] };
 });
 var NEWSSIG = HOMELIST.length ? 'n' + hashN(HOMELIST.join('\n')) : '';   // the home card comes back only when the list changes
-function blank(){ return { v:1, items:{}, th:{}, tn:{}, blurs:{}, skips:{}, rounds:[], exams:[], day:{}, best:0, plan:{ date:EXAMDATE, goal:20, name:EXAMNAME }, cards:{}, cardNew:{}, goalDays:{}, twins:0, game:null, cramDone:{}, settings:{ bonus:false, round:10, ch:DEFCH, seenNews:'', sataTF:true, newCards:20 }, updated:0 }; }
+function blank(){ return { v:1, items:{}, th:{}, tn:{}, blurs:{}, skips:{}, rounds:[], exams:[], day:{}, best:0, plan:{ date:EXAMDATE, goal:20, name:EXAMNAME }, cards:{}, cardNew:{}, goalDays:{}, twins:0, game:null, cramDone:{}, settings:{ bonus:false, round:10, chs:(DEFCH === 'all' ? CHIDS.slice() : [DEFCH]), seenNews:'', sataTF:true, newCards:20 }, updated:0 }; }
 function adopt(o){
   var b = blank(); if(!o || typeof o !== 'object') return b;
   Object.keys(b).forEach(function(k){ if(o[k] !== undefined && k !== 'settings') b[k] = o[k]; });
   b.settings = Object.assign(blank().settings, o.settings || {});
-  var sc = String(b.settings.ch); b.settings.ch = (sc === 'all' || CHMAP[sc]) ? sc : DEFCH;   // a saved chapter this course doesn't have
+  var chs = Array.isArray(b.settings.chs) ? b.settings.chs.map(String).filter(function(c){ return CHMAP[c]; }) : [];
+  if(!chs.length){   // migrate an older save's single `ch` field, or fall back to the default
+    var legacy = o.settings && o.settings.ch != null ? String(o.settings.ch) : '';
+    chs = legacy === 'all' ? CHIDS.slice() : (CHMAP[legacy] ? [legacy] : (DEFCH === 'all' ? CHIDS.slice() : [DEFCH]));
+  }
+  b.settings.chs = chs; delete b.settings.ch;   // a saved chapter this course doesn't have is dropped above
   if(b.plan && typeof b.plan === 'object'){
     if(!b.plan.date && !b.plan.cleared && EXAMDATE){ b.plan.date = EXAMDATE; b.plan.today = null; }   // the course's exam date until he sets or clears his own; re-pace today's goal
     if(CFG.examName) b.plan.name = EXAMNAME;                                  // no screen edits the name, so the config owns it
@@ -480,8 +485,13 @@ function toast(m){ var t = document.getElementById('toast'); t.textContent = m; 
 
 /* ================= SKILL MODEL ================= */
 function chOf(s){ var c = SEC[s] && SEC[s].ch; return (c != null && c !== '') ? String(c) : CH0; }
-function secIn(s){ var c = S.settings.ch; return c === 'all' || chOf(s) === c; }
+function secIn(s){ return S.settings.chs.indexOf(chOf(s)) !== -1; }
 function chName(c){ return c === 'all' ? ALLNAME : CHMAP[c] ? CHMAP[c].name : 'Chapter ' + c; }
+function orderedChs(){ return S.settings.chs.slice().sort(function(a, b){ return CHIDS.indexOf(a) - CHIDS.indexOf(b); }); }
+function chsAll(){ return S.settings.chs.length >= CHIDS.length; }
+function chsKey(){ return chsAll() ? 'all' : orderedChs().join(','); }
+function chsLabel(){ if(chsAll()) return ALLNAME; var ids = orderedChs(); return ids.length > 1 ? 'Chapters ' + joinAnd(ids) : 'Chapter ' + ids[0]; }
+function chsShortLabel(){ if(chsAll()) return 'all chapters'; var ids = orderedChs(); return 'Ch ' + ids.join('/'); }
 function allowedItem(it){ return secIn(it.s) && !(it.x && !it.b && !S.settings.bonus); }
 function pool(filter){ return D.items.filter(function(it){ return allowedItem(it) && (!filter || filter(it)); }); }
 function theta(s){ return S.th[s] || 0; }
@@ -615,7 +625,7 @@ function reportText(){
   var L = [], all = Object.keys(S.items).map(function(k){ return [k, S.items[k]]; });
   var ans = all.reduce(function(a, x){ return a + x[1].n; }, 0);
   L.push(REPTITLE + ' (' + dayKey() + ')');
-  L.push('Chapter filter: ' + chName(S.settings.ch) + '.');
+  L.push('Chapter filter: ' + chsLabel() + '.');
   planReport(L);
   L.push('Answered ' + ans + ' total, ' + (S.day[dayKey()] || 0) + ' today. Rounds: ' + S.rounds.length + '. Mock exams: ' + S.exams.length +
     (S.exams.length ? ' (last: ' + S.exams[S.exams.length - 1].right + '/' + S.exams[S.exams.length - 1].n + ')' : '') + '.');
@@ -687,13 +697,15 @@ function tiles(c){
   }).join('');
 }
 function tileMap(){
-  if(S.settings.ch !== 'all') return '<div class="map">' + tiles() + '</div>';
-  return CHIDS.map(function(c){ var t = tiles(c); return t ? '<h3 class="chh">' + esc(chName(c)) + '</h3><div class="map">' + t + '</div>' : ''; }).join('');
+  var chs = orderedChs();
+  if(chs.length <= 1) return '<div class="map">' + tiles(chs[0]) + '</div>';
+  return chs.map(function(c){ var t = tiles(c); return t ? '<h3 class="chh">' + esc(chName(c)) + '</h3><div class="map">' + t + '</div>' : ''; }).join('');
 }
 function chSel(){
-  return '<div class="chsel" role="group" aria-label="Chapter"><span class="small muted">Quiz me on</span><div class="chips">' +
-    CHS.map(function(c){ return [c.id, c.short]; }).concat([['all', 'All']]).map(function(x){
-      return '<button class="chip" type="button" data-chq="' + esc(x[0]) + '" aria-pressed="' + (S.settings.ch === x[0]) + '">' + esc(x[1]) + '</button>'; }).join('') + '</div></div>';
+  return '<div class="chsel" role="group" aria-label="Chapters"><span class="small muted">Quiz me on</span><div class="chips">' +
+    '<button class="chip" type="button" data-chall aria-pressed="' + chsAll() + '">All</button>' +
+    CHS.map(function(c){ return '<button class="chip" type="button" data-chq="' + esc(c.id) + '" aria-pressed="' + (S.settings.chs.indexOf(c.id) !== -1) + '">' + esc(c.short) + '</button>'; }).join('') + '</div>' +
+    '<p class="small muted" style="margin:4px 2px 0">Tap to add or remove a chapter — pick just the ones an upcoming quiz covers, or All for the exam.</p></div>';
 }
 function homeListHTML(){ return '<ul class="newlist">' + HOMELIST.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'; }
 function newsCard(){
@@ -707,7 +719,7 @@ function newsCard(){
 function home(){
   var weakN = pool(isWeak).length, bookTried = pool(function(it){ return it.b && st(it) && st(it).n; }).length, today = S.day[dayKey()] || 0, rd = readiness();
   app.innerHTML = '<h1>Adaptive quiz</h1><p class="sub">' + (HASBOOK ? 'It finds your weakest topics, retests misses and lucky guesses, and leans on your book’s questions.' : 'It finds your weakest topics and retests misses and lucky guesses.') + '</p>' + chSel() + newsCard() + planCard() + questCard() +
-    '<button class="cta alt" type="button" data-mode="adaptive"><b>🎲 Adaptive round · ' + S.settings.round + ' questions · ' + (S.settings.ch === 'all' ? 'all chapters' : 'Ch ' + S.settings.ch) + '</b><span>' + esc(nextFocus()) + '</span></button>' +
+    '<button class="cta alt" type="button" data-mode="adaptive"><b>🎲 Adaptive round · ' + S.settings.round + ' questions · ' + chsShortLabel() + '</b><span>' + esc(nextFocus()) + '</span></button>' +
     '<p class="cta-note">' + (function(){ var x = seenIn(); return '<b>' + x[0] + ' of ' + x[1] + '</b> questions seen · '; })() + today + ' answered today' + (S.best ? ' · best streak ' + S.best : '') + (rd != null ? ' · practice readiness ' + rd + '%' : '') + '</p>' +
     '<div class="modes">' + (HASBOOK ? modeBtn('book', '📘', 'Book questions', bookTried + ' of ' + pool(function(it){ return it.b; }).length + ' tried') : '') + modeBtn('weak', '🎯', 'Weak spots', weakN ? weakN + ' to retest' : 'Nothing waiting') + (D.items.some(function(it){ return it.mc; }) ? modeBtn('mc', '⚖️', 'Most correct', seenIn(function(it){ return it.mc; })[0] + ' of ' + pool(function(it){ return it.mc; }).length + ' tried') : '') +
     modeBtn('cram', '⚡', 'Cram', (function(){ var t = pool().length, l = pool(modeFilter('cram')).length; return l === t ? 'Every question once, no repeats' : (t - l) + ' of ' + t + ' done · no repeats'; })()) + modeBtn('examset', '⏱', 'Mock exam', 'Timed, answers at the end') + modeBtn('topics', '🗂', 'Pick a topic', 'Drill one area') + modeBtn('cards', '🃏', 'Flashcards', cardBtnSub()) + modeBtn('arcade', '🎮', 'Arcade', arcadeSub()) + '</div>' +
@@ -992,7 +1004,13 @@ document.addEventListener('click', function(e){
   if(ds.topic){ startRound('topic', ds.topic); return; }
   if(ds.rlen){ S.settings.round = +ds.rlen; persist(); render(); return; }
   if('bonus' in ds){ S.settings.bonus = !S.settings.bonus; persist(); render(); return; }
-  if(ds.chq){ S.settings.ch = ds.chq; persist(); render(); return; }
+  if('chall' in ds){ S.settings.chs = CHIDS.slice(); persist(); render(); return; }
+  if(ds.chq){
+    var cid = ds.chq, ci = S.settings.chs.indexOf(cid);
+    if(ci === -1) S.settings.chs = S.settings.chs.concat([cid]);
+    else if(S.settings.chs.length > 1) S.settings.chs = S.settings.chs.filter(function(x){ return x !== cid; });
+    persist(); render(); return;
+  }
   if('seennews' in ds){ S.settings.seenNews = NEWSSIG; persist(); render(); return; }
   if('zoom' in ds){
     IMGZOOM = !IMGZOOM;
@@ -1218,7 +1236,7 @@ function tfNote(c){
 /* ---------- flashcards ---------- */
 var CS = null;
 function cardCh(cd){ return cd.ch != null && cd.ch !== '' ? String(cd.ch) : chOf(cd.s); }   // a card's chapter; numeric ids or a section-only card still match
-function cardPool(){ return CARDS.filter(function(cd){ return S.settings.ch === 'all' || cardCh(cd) === S.settings.ch; }); }
+function cardPool(){ return CARDS.filter(function(cd){ return S.settings.chs.indexOf(cardCh(cd)) !== -1; }); }
 /* New-card order (Josh's rule): instructor-source cards first (a card with a truthy `src` tag), then one card from
    each section in turn, then key terms (k 'term', or an older deck's 'Key terms' topic), then memory aids (k 'hook').
    Any other kind (table, fig) goes in the section round-robin. A card's section is its `s` (section id) or else its
@@ -1287,7 +1305,7 @@ function rateCard(q){
 }
 function cardText(t){ return esc(t).split('\n').map(function(l){ return l.trim(); }).filter(Boolean).join('<br>'); }
 function cardsScreen(){
-  var cc = cardCounts(), chLbl = S.settings.ch === 'all' ? 'All chapters' : 'Chapter ' + S.settings.ch;
+  var cc = cardCounts(), chLbl = chsLabel();
   if(!CARDS.length){ app.innerHTML = '<h1>Flashcards</h1><p class="sub">No cards yet.</p><div class="row"><button class="btn ghost" type="button" data-go="home">Home</button></div>'; return; }
   if(!CS || CS.i >= CS.q.length){
     var nextDue = cardPool().map(function(cd){ var s = S.cards[cd.id]; return s ? s.due : Infinity; }).reduce(function(a, b){ return Math.min(a, b); }, Infinity);
@@ -1665,7 +1683,7 @@ function showLevelUp(){
   var b = ov.querySelector('[data-lvlok]'); if(b) try { b.focus({ preventScroll:true }); } catch(e){ b.focus(); }
 }
 function fmtShort(t){ try { return new Date(t).toLocaleDateString(undefined, { month:'short', day:'numeric' }); } catch(e){ return ''; } }
-function chLabel(ch){ ch = ch || S.settings.ch; return ch === 'all' ? 'all chapters' : 'Ch ' + ch; }
+function chLabel(){ return chsShortLabel(); }
 
 /* ---------- badges ---------- */
 var BADGES = [
@@ -1936,15 +1954,15 @@ function bzWhy(it, oi, truth){
   if(truth) return k === 2 ? 'Your professor’s slide lists it for this question.' : 'Your book lists it for this question.';
   return 'Your book doesn’t list it for this question.';
 }
-function blitzPool(ch){ return D.items.filter(function(it){ return it.m && baseAllowed(it) && !it.c && !it.img && strip(it.q).length <= 240 && (ch === 'all' || chOf(it.s) === ch); }); }
+function blitzPool(chs){ return D.items.filter(function(it){ return it.m && baseAllowed(it) && !it.c && !it.img && strip(it.q).length <= 240 && chs.indexOf(chOf(it.s)) !== -1; }); }
 function blitzBest(ch){ return (GM().blitz[ch] || {}).best || 0; }
 function blitzStart(){
-  var ch = S.settings.ch, P = blitzPool(ch);
+  var chs = orderedChs(), key = chsKey(), P = blitzPool(chs);
   if(!P.length){ toast('No select-all questions here yet'); return; }
   var w = function(it){ var s = st(it); return (s && (s.res === 'wrong' || s.res === 'lucky') ? 0 : 1) + Math.random(); };
   var deck = P.map(function(it){ return [w(it), it]; }).sort(function(a, b){ return a[0] - b[0]; })
     .map(function(x){ return { id:x[1].id, ord:shuffle(x[1].o.map(function(_, i){ return i; })) }; });
-  BZ = { ch:ch, deck:deck, si:0, oi:0, ph:'play', end:Date.now() + BZLEN, score:0, right:0, wrong:0, omit:0, extra:0, perfect:0, stemOk:true, run:0, bestRun:0, miss:[], fb:null };
+  BZ = { ch:key, deck:deck, si:0, oi:0, ph:'play', end:Date.now() + BZLEN, score:0, right:0, wrong:0, omit:0, extra:0, perfect:0, stemOk:true, run:0, bestRun:0, miss:[], fb:null };
   go('blitz'); blitzTick();
 }
 function blitzTick(){
@@ -2040,9 +2058,9 @@ function arcadeScreen(){
       '<div class="bc-foot"><span class="small">' + (rec.wins ? '🏆 Defeated' + (rec.wins > 1 ? ' ×' + rec.wins : '') : rec.tries ? 'Best: ' + rec.best + ' of ' + sz.hp + ' hits' : 'Undefeated') + ' · ' + sz.hp + ' HP · 3 ❤️</span>' +
       '<button class="btn sm" type="button" data-boss="' + esc(ch) + '"' + (sz.hp ? '' : ' disabled') + '>' + (rec.wins ? 'Rematch' : 'Fight') + '</button></div></div>';
   }).join('');
-  var bp = blitzPool(S.settings.ch).length;
+  var bp = blitzPool(orderedChs()).length;
   var bz = '<div class="card bosscard bzcard"><div class="bc-top"><span class="bc-em" aria-hidden="true">⚡</span><div><b>Select-All Blitz</b><span class="small muted">60 seconds. Read a select-all question, then call each option true or false, one at a time. It trains the exact skill that costs you the most points.</span></div></div>' +
-    '<div class="bc-foot"><span class="small">Best (' + chLabel() + '): ' + (blitzBest(S.settings.ch) || '—') + ' · ' + bp + ' questions</span><button class="btn sm" type="button" data-blitz' + (bp ? '' : ' disabled') + '>Play</button></div></div>';
+    '<div class="bc-foot"><span class="small">Best (' + chLabel() + '): ' + (blitzBest(chsKey()) || '—') + ' · ' + bp + ' questions</span><button class="btn sm" type="button" data-blitz' + (bp ? '' : ' disabled') + '>Play</button></div></div>';
   var badges = '<div class="bdg-grid">' + BADGES.map(function(b){ var t = g.badges[b[0]];
     return '<div class="bdg' + (t ? ' on' : '') + '"><span class="bi" aria-hidden="true">' + (t ? b[1] : '🔒') + '</span><b>' + esc(b[2]) + '</b><small>' + esc(t ? 'Earned ' + fmtShort(t) : b[3]) + '</small></div>'; }).join('') + '</div>';
   var earned = BADGES.filter(function(b){ return g.badges[b[0]]; }).length;

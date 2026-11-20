@@ -440,18 +440,15 @@ K.install = function(opt){
   const cards = opt.cards||[];
   K.merck.set(LS.get('e4-merck', true));
   if(opt.merckSlot){ opt.merckSlot.appendChild(K.merck.button()); K.merck.set(K.merck.on()); }
-  const placed = new Set();
-  cards.forEach(c=>{ const m = opt.mount(c.topic); if(!m) return;
-    let box = m.querySelector(':scope > .k-dzbox');
-    if(!box){ box=document.createElement('div'); box.className='k-dzbox'; box.innerHTML='<h3 style="margin:22px 0 6px">🩺 Disease cards</h3>'; m.appendChild(box);}
-    box.insertAdjacentHTML('beforeend', K.cardHTML(c)); placed.add(c.id); });
+  const placed = new Set(cards.map(c=>c.id));
   if(opt.hubAfter){
     const hub=document.createElement('section'); hub.className='k-dz-sec k-scope'; hub.id='disease-hub';
     hub.innerHTML=`<h2>🩺 Disease cards · ${esc(opt.chapterLabel||'')}</h2>
-      <p class="k-sub">Every card uses the same 9 fields, in order. Tags show where each fact comes from: <span class="k-tag bk">Book</span> <span class="k-tag lec">Lecture</span> <span class="k-tag m">Ⓜ Merck</span>. Turn Merck off to study from the book and lecture only.</p>
+      <p class="k-sub">One dedicated card per disease, all 9 fields in the same order: Etiology, Pathophysiology, Signs, Symptoms, Labs / Diagnostics, Risk factors, Complications, Expected treatment, Nursing interventions. Tags show where each fact comes from: <span class="k-tag bk">Book</span> <span class="k-tag lec">Lecture</span> <span class="k-tag m">Ⓜ Merck</span>. Turn Merck off to study from the book and lecture only.</p>
       <div class="k-row"><button type="button" class="k-btn" id="kCoverAll" aria-pressed="false">🙈 Hide answers on every card</button><span class="k-mslot"></span></div>
       <div class="k-filter">${cards.map(c=>`<a class="k-btn" href="#${esc(c.id)}" data-open="${esc(c.id)}">${c.name}</a>`).join('')}</div>
-      <div class="k-g1"></div><div class="k-g2"></div>`;
+      <div class="k-g1"></div><div class="k-g2"></div>
+      <div class="k-cardlist">${cards.map(K.cardHTML).join('')}</div>`;
     opt.hubAfter.after(hub);
     hub.querySelector('.k-mslot').appendChild(K.merck.button()); K.merck.set(K.merck.on());
     const ca=hub.querySelector('#kCoverAll'); ca.onclick=()=>{const on=ca.getAttribute('aria-pressed')!=='true';ca.setAttribute('aria-pressed',on);ca.textContent=on?'👀 Show answers on every card':'🙈 Hide answers on every card';K.setCoverAll(on);};
@@ -1068,7 +1065,7 @@ K.addGloss = function(gl, mount){
   const go = () => {
     document.querySelectorAll('.k-mount').forEach(m=>{ const f=K.labs[m.dataset.lab]; if(f && !m.dataset.done){ m.dataset.done=1; f(m); }});
     K.addGaps(E4.gaps, mount); K.addGloss(E4.gaps.glossary, mount);
-    K.install({cards:E4.cards, mount, hubAfter:document.querySelector('section.legend'), merckSlot:document.querySelector('.k-mslot13'), chapterLabel:'Chapter 13', detectiveTitle:'Lab detective · hormone panels'});
+    K.install({cards:E4.cards, mount, hubAfter:document.querySelector('#topics'), merckSlot:document.querySelector('.k-mslot13'), chapterLabel:'Chapter 13', detectiveTitle:'Lab detective · hormone panels'});
   };
   document.readyState==='loading' ? document.addEventListener('DOMContentLoaded', go) : go();
 })();</script>

@@ -62,7 +62,7 @@ const motionObserver=new MutationObserver(records=>records.forEach(r=>{let el=r.
 .k-btn:hover{border-color:var(--k-focus)}
 .k-btn:active{transform:scale(.97)}
 .k-btn[aria-pressed="true"],.k-btn.on{background:#2F5FC4;border-color:#2F5FC4;color:#fff}
-.k-btn:focus-visible,.k-dz summary:focus-visible,.k-dz .fr:focus-visible,.k-lab :focus-visible{outline:3px solid var(--k-focus);outline-offset:2px}
+.k-btn:focus-visible,.k-dz-head:focus-visible,.k-dz .fr:focus-visible,.k-lab :focus-visible{outline:3px solid var(--k-focus);outline-offset:2px}
 .k-btn:disabled{opacity:.5;cursor:not-allowed}
 .k-note{padding:10px 14px;border-radius:12px;background:var(--k-soft);border:1px solid var(--k-line);font-size:15px;margin:10px 0}
 
@@ -85,12 +85,9 @@ body.dark .k-merck-btn[aria-pressed="true"],[data-theme="dark"] .k-merck-btn[ari
 
 /* disease cards (Exam 3 format: 9 fixed fields) */
 .k-dz{margin:12px 0;border:1px solid var(--k-line);border-radius:16px;background:var(--k-soft);box-shadow:0 1px 2px rgba(0,0,0,.04),0 6px 18px -12px rgba(20,30,70,.25);overflow:hidden}
-.k-dz>summary{list-style:none;cursor:pointer;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:14px 16px;min-height:52px}
-.k-dz>summary::-webkit-details-marker{display:none}
+.k-dz-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:14px 16px;min-height:52px}
 .k-dz .nm{font-weight:800;font-size:1.08rem;flex:1 1 220px}
 .k-dz .meta{font-size:13px;color:var(--k-muted);font-weight:700}
-.k-dz .chev{width:10px;height:10px;border-right:2.5px solid var(--k-muted);border-bottom:2.5px solid var(--k-muted);transform:rotate(45deg);transition:transform .2s var(--k-ease);margin-right:4px}
-.k-dz[open] .chev{transform:rotate(-135deg)}
 .k-dz .card-body{padding:4px 16px 16px;border-top:1px solid var(--k-line);background:var(--k-card)}
 .k-dz .k-tools{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
 .k-dz .fields{display:grid}
@@ -360,13 +357,13 @@ K.cardHTML = function(c){
     return `<div class="fr" data-f="${k}"${allM?' data-allm="1"':''}><span class="chip ${cls}">${label}</span><div class="ans">${body}</div></div>`;
   }).join('');
   const pearl = c.pearl ? `<div class="k-pearl${isM(c.pearl)?' mk':''}">★ <b>Exam pearl:</b> ${c.pearl.t} ${K.tag(c.pearl.src,c.pearl.url)}</div>` : '';
-  return `<details class="k-dz" id="${esc(c.id)}" data-name="${esc(strip(c.name))}">
-    <summary><span class="nm">🩺 ${c.name}</span><span class="meta">9-field card${nM?` · ${nM} Merck add-on${nM>1?'s':''}`:''}</span><span class="chev" aria-hidden="true"></span></summary>
+  return `<div class="k-dz" id="${esc(c.id)}" data-name="${esc(strip(c.name))}">
+    <div class="k-dz-head"><span class="nm">🩺 ${c.name}</span><span class="meta">9-field card${nM?` · ${nM} Merck add-on${nM>1?'s':''}`:''}</span></div>
     <div class="card-body">
       ${K.cascadeHTML(c)}
       <div class="k-tools"><button type="button" class="k-btn k-cover" aria-pressed="false">🙈 Hide answers</button></div>
       <div class="fields">${rows}</div>${pearl}
-    </div></details>`;
+    </div></div>`;
 };
 
 /* ---- Merck toggle: one switch, whole guide, remembered ---- */
@@ -386,9 +383,10 @@ K.merck = {
 
 /* ---- Hide answers (say it, then tap each row to check) ---- */
 function setCover(card, on){
-  card.querySelector('.fields').classList.toggle('covered', on);
+  const fields = card.querySelector('.fields'); if(!fields) return;
+  fields.classList.toggle('covered', on);
   card.querySelectorAll('.fr').forEach(r=>{r.classList.remove('shown'); if(on){r.tabIndex=0;r.setAttribute('role','button');r.setAttribute('aria-label','Reveal '+strip(r.querySelector('.chip').innerHTML));} else {r.removeAttribute('tabindex');r.removeAttribute('role');r.removeAttribute('aria-label');}});
-  const b = card.querySelector('.k-cover'); b.setAttribute('aria-pressed',on); b.textContent = on ? '👀 Show all answers' : '🙈 Hide answers';
+  const b = card.querySelector('.k-cover'); if(!b) return; b.setAttribute('aria-pressed',on); b.textContent = on ? '👀 Show all answers' : '🙈 Hide answers';
 }
 K.setCoverAll = on => document.querySelectorAll('.k-dz').forEach(c=>setCover(c,on));
 document.addEventListener('click', e=>{
@@ -466,7 +464,7 @@ function detective(root, cards, title){
       sc.textContent=`Score ${right}/${done}`;});
     opts.dataset.locked='0'; };
   root.querySelector('.k-next').onclick=next;
-  root.addEventListener('click',e=>{const a=e.target.closest('.k-jump');if(!a)return;const d=document.querySelector(a.getAttribute('href'));if(d){d.open=true;}});
+  root.addEventListener('click',e=>{const a=e.target.closest('.k-jump');if(!a)return;const d=document.querySelector(a.getAttribute('href'));if(d){d.scrollIntoView({block:'start'});}});
   sc.textContent='Score 0/0'; next();
 }
 
@@ -488,7 +486,7 @@ K.install = function(opt){
     opt.hubAfter.after(hub);
     hub.querySelector('.k-mslot').appendChild(K.merck.button()); K.merck.set(K.merck.on());
     const ca=hub.querySelector('#kCoverAll'); ca.onclick=()=>{const on=ca.getAttribute('aria-pressed')!=='true';ca.setAttribute('aria-pressed',on);ca.textContent=on?'👀 Show answers on every card':'🙈 Hide answers on every card';K.setCoverAll(on);};
-    hub.addEventListener('click',e=>{const a=e.target.closest('[data-open]');if(!a)return;const d=document.getElementById(a.dataset.open);if(d){d.open=true;}});
+    hub.addEventListener('click',e=>{const a=e.target.closest('[data-open]');if(!a)return;const d=document.getElementById(a.dataset.open);if(d){d.scrollIntoView({block:'start'});}});
     sorter(hub.querySelector('.k-g1'), cards);
     detective(hub.querySelector('.k-g2'), cards, opt.detectiveTitle);
   }
@@ -1085,14 +1083,14 @@ K.addGaps = function(gaps, mount){
     const m = mount(tid); if(!m) return;
     const box = document.createElement('div'); box.className='k-dz-sec k-scope k-gaps';
     box.innerHTML = '<h3 style="margin:0 0 4px">📚 Also in the textbook</h3><p class="k-sub">More from this section of the chapter, so nothing in the book is skipped.</p>' +
-      items.map(it=>`<details class="k-dz"><summary><span class="nm">${it.heading}</span><span class="meta">${it.src==='lecture'?'Lecture':'Book'}${it.bookLines?' · ch. lines '+K.esc(it.bookLines):''}</span><span class="chev" aria-hidden="true"></span></summary><div class="card-body k-gap-body">${it.html} ${K.tag(it.src||'book')}</div></details>`).join('');
+      items.map(it=>`<div class="k-dz"><div class="k-dz-head"><span class="nm">${it.heading}</span><span class="meta">${it.src==='lecture'?'Lecture':'Book'}${it.bookLines?' · ch. lines '+K.esc(it.bookLines):''}</span></div><div class="card-body k-gap-body">${it.html} ${K.tag(it.src||'book')}</div></div>`).join('');
     const dz = m.querySelector(':scope > .k-dzbox'); dz ? m.insertBefore(box, dz) : m.appendChild(box); n+=items.length;
   });
   return n;
 };
 K.addGloss = function(gl, mount){
   if(!gl) return; Object.entries(gl).forEach(([tid, rows])=>{ const m=mount(tid); if(!m||!rows.length) return;
-    const box=m.querySelector(':scope > .k-gaps'); const html='<details class="k-dz"><summary><span class="nm">📖 More key terms</span><span class="meta">'+rows.length+' terms</span><span class="chev" aria-hidden="true"></span></summary><div class="card-body"><dl class="k-gl">'+rows.map(([t,d])=>`<dt><b>${t}</b></dt><dd style="margin:0 0 8px">${d}</dd>`).join('')+'</dl></div></details>';
+    const box=m.querySelector(':scope > .k-gaps'); const html='<div class="k-dz"><div class="k-dz-head"><span class="nm">📖 More key terms</span><span class="meta">'+rows.length+' terms</span></div><div class="card-body"><dl class="k-gl">'+rows.map(([t,d])=>`<dt><b>${t}</b></dt><dd style="margin:0 0 8px">${d}</dd>`).join('')+'</dl></div></div>';
     if(box) box.insertAdjacentHTML('beforeend',html); else m.insertAdjacentHTML('beforeend','<div class="k-dz-sec k-scope">'+html+'</div>'); });
 };
 </script>

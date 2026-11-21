@@ -341,7 +341,7 @@ function section(t){
   const el = document.createElement('div');
   el.className='topic'; el.id = 'topic-'+t.id;
   el.style.setProperty('--tc', t.color);
-  el.style.setProperty('--tc-tint', t.tint);
+  el.style.setProperty('--tc-tint', 'color-mix(in srgb, ' + t.color + ' 14%, var(--card))');
 
   const studied = localStorage.getItem('studied_'+t.id)==='1';
 

@@ -1319,6 +1319,20 @@ body.dark .k-stage .lvt.normal,[data-theme="dark"] .k-stage .lvt.normal{fill:#6c
 @media (max-width:480px){.k-rung{grid-template-columns:1fr}}
 .k-simnote{font-size:12.5px;color:var(--k-muted);margin:10px 0 0}
 
+/* hormone-axis lab: vertical chain of answered steps */
+.k-chain{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:0}
+.k-chain:empty{display:none}
+.k-link{position:relative;padding:9px 12px;border-radius:12px;border:1.5px solid var(--k-line);border-left:5px solid #067647;background:var(--k-card);display:flex;flex-direction:column;gap:3px;margin-bottom:22px}
+.k-link:last-child{margin-bottom:0}
+.k-link:not(:last-child)::after{content:"↓";position:absolute;left:50%;bottom:-21px;transform:translateX(-50%);font-size:17px;line-height:1;color:var(--k-muted)}
+.k-link.no{border-left-color:#B42318}
+.k-link-h{font-weight:800;font-size:15px;color:var(--k-ink)}
+.k-link-r{font-size:14px;line-height:1.45;color:var(--k-ink)}
+.k-link-you{font-size:13px;font-weight:700;color:#B42318}
+body.dark .k-link,[data-theme="dark"] .k-link{border-left-color:#4ade80}
+body.dark .k-link.no,[data-theme="dark"] .k-link.no{border-left-color:#ff8a8a}
+body.dark .k-link-you,[data-theme="dark"] .k-link-you{color:#ffb3b3}
+
 body.hide-merck .callout.merck, body.hide-merck .merck, body.hide-merck .outside-content{display:none!important}
 .k-gap-body table{border-collapse:collapse;width:100%;margin:8px 0;font-size:15px}
 .k-gap-body th,.k-gap-body td{border:1px solid var(--k-line);padding:6px 8px;text-align:left;vertical-align:top}
@@ -1729,74 +1743,156 @@ L.water = function(root){
 };
 
 /* ================= HORMONE AXIS LAB: HPT + HPA (Ch13) ================= */
+/* Guided chain quiz: (1) where does the problem start, then (2..4) every hormone in
+   cause-and-effect order, so the learner walks root issue -> what it causes next -> down the chain. */
 L.axis = function(root){
   const AX = {
     hpt:{nodes:['Hypothalamus','Anterior pituitary','Thyroid'], h:['TRH','TSH','T3 / T4'], gland:'🦋'},
     hpa:{nodes:['Hypothalamus','Anterior pituitary','Adrenal cortex'], h:['CRH','ACTH','Cortisol'], gland:'⛰️'}
   };
+  // root: 0 hypothalamus · 1 pituitary · 2 gland · 3 outside the axis · -1 no problem
+  // order: hormone levels in cause-and-effect order, starting where the problem starts
+  // step[i]: plain-language reason for hormone level i
   const SC = {
     hpt:[
-      {k:'n', name:'Normal', lv:['normal','normal','normal'], hit:-1, fb:'ok', why:'T3/T4 feed back and hold TRH and TSH steady.', sx:[]},
-      {k:'graves', name:'Graves (primary hyper)', lv:['down','down','up'], hit:2, fb:'ok', why:'<b>IgG antibodies bind the TSH receptor</b> and drive the thyroid directly. High T3/T4 then <b>suppresses TRH and TSH</b>.', sx:['Weight loss','Heat intolerance','Tachycardia · palpitations','Tremor','Sweating','Diarrhea','Goiter','Exophthalmos']},
-      {k:'hashi', name:'Hashimoto (primary hypo)', lv:['up','up','down'], hit:2, fb:'ok', why:'Autoimmune destruction of the gland. Low T3/T4 removes the brake, so <b>TRH and TSH climb</b> trying to push it.', sx:['Fatigue','Cold intolerance','Weight gain','Dry skin · coarse hair','Constipation','Lethargy · impaired memory','Goiter (possible)']},
-      {k:'sec', name:'Pituitary failure (secondary hypo)', lv:['up','down','down'], hit:1, fb:'ok', why:'The pituitary can\'t make TSH (book: impaired TSH secretion), so the thyroid isn\'t told to work. <b>Both TSH and T4 are low.</b>', sx:['Fatigue','Cold intolerance','Weight gain']},
-      {k:'aden', name:'TSH-secreting adenoma', lv:['down','up','up'], hit:1, fb:'ignored', why:'A pituitary adenoma makes excess TSH and <b>ignores feedback</b>. High TSH and high T4 together point to the pituitary.', sx:['Hyperthyroid picture']}
+      {k:'n', name:'Normal', lv:['normal','normal','normal'], hit:-1, root:-1, order:[0,1,2], fb:'ok',
+       step:['The hypothalamus makes a normal amount of TRH.','TRH tells the pituitary to make a normal amount of TSH.','TSH tells the thyroid to make T3/T4. T3/T4 then <b>feeds back</b> and holds TRH and TSH steady.'],
+       why:'T3/T4 feed back and hold TRH and TSH steady.', sx:[]},
+      {k:'graves', name:'Graves (primary hyper)', lv:['down','down','up'], hit:2, root:2, order:[2,1,0], fb:'ok',
+       rootWhy:'<b>The thyroid itself.</b> Antibodies bind the TSH receptor and switch the gland on.',
+       step:['High T3/T4 also quiets the hypothalamus, so <b>TRH drops</b>.','High T3/T4 tells the pituitary to stop, so <b>TSH drops</b>.','Antibodies keep the thyroid switched on, so it makes <b>too much T3/T4</b>.'],
+       why:'<b>IgG antibodies bind the TSH receptor</b> and drive the thyroid directly. High T3/T4 then <b>suppresses TRH and TSH</b>.', sx:['Weight loss','Heat intolerance','Tachycardia · palpitations','Tremor','Sweating','Diarrhea','Goiter','Exophthalmos']},
+      {k:'hashi', name:'Hashimoto (primary hypo)', lv:['up','up','down'], hit:2, root:2, order:[2,1,0], fb:'ok',
+       rootWhy:'<b>The thyroid itself.</b> The immune system attacks and destroys it.',
+       step:['The hypothalamus loses the brake too, so <b>TRH rises</b>.','With little T3/T4, the brake is off, so the pituitary pushes out <b>more TSH</b>.','The damaged thyroid makes <b>too little T3/T4</b>.'],
+       why:'Autoimmune destruction of the gland. Low T3/T4 removes the brake, so <b>TRH and TSH climb</b> trying to push it.', sx:['Fatigue','Cold intolerance','Weight gain','Dry skin · coarse hair','Constipation','Lethargy · impaired memory','Goiter (possible)']},
+      {k:'sec', name:'Pituitary failure (secondary hypo)', lv:['up','down','down'], hit:1, root:1, order:[1,2,0], fb:'ok',
+       rootWhy:'<b>The pituitary.</b> It can\'t make enough TSH.',
+       step:['Low T3/T4 takes the brake off the hypothalamus, so <b>TRH rises</b>.','The damaged pituitary makes <b>too little TSH</b>.','Without TSH, the thyroid isn\'t told to work, so <b>T3/T4 falls</b>.'],
+       why:'The pituitary can\'t make TSH (book: impaired TSH secretion), so the thyroid isn\'t told to work. <b>Both TSH and T4 are low.</b>', sx:['Fatigue','Cold intolerance','Weight gain']},
+      {k:'aden', name:'TSH-secreting adenoma', lv:['down','up','up'], hit:1, root:1, order:[1,2,0], fb:'ignored',
+       rootWhy:'<b>The pituitary.</b> A tumor there makes extra TSH.',
+       step:['High T3/T4 quiets the hypothalamus, so <b>TRH falls</b>. (The tumor ignores the brake; the hypothalamus does not.)','The pituitary tumor makes <b>too much TSH</b> and ignores feedback.','Extra TSH drives the thyroid to make <b>too much T3/T4</b>.'],
+       why:'A pituitary adenoma makes excess TSH and <b>ignores feedback</b>. High TSH and high T4 together point to the pituitary.', sx:['Hyperthyroid picture']}
     ],
     hpa:[
-      {k:'n', name:'Normal', lv:['normal','normal','normal'], hit:-1, fb:'ok', why:'Cortisol feeds back and holds CRH and ACTH steady.', sx:[]},
-      {k:'exo', name:'Cushing · long-term steroids', lv:['down','down','down'], hit:-2, fb:'ok', why:'Prednisone acts like cortisol and <b>suppresses CRH/ACTH</b>. The patient\'s own adrenal output falls, so <b>never stop steroids abruptly</b>.', sx:['Cushing features from the drug']},
-      {k:'pit', name:'Cushing · pituitary ACTH tumor', lv:['down','up','up'], hit:1, fb:'ignored', why:'The tumor makes excess ACTH → <b>adrenal hyperplasia and high cortisol</b>. ACTH-dependent.', sx:['Moon face','Buffalo hump','Truncal obesity · striae','↑ Glucose (glucose intolerance)','Muscle wasting','Thin skin · poor wound healing','Osteoporosis','↑ Infections']},
-      {k:'adr', name:'Cushing · adrenal tumor', lv:['down','down','up'], hit:2, fb:'ok', why:'The adrenal tumor makes cortisol on its own (<b>not ACTH-directed</b>). High cortisol suppresses ACTH.', sx:['Moon face','Buffalo hump','Truncal obesity · striae','↑ Glucose (glucose intolerance)','Muscle wasting','Thin skin · poor wound healing','Osteoporosis','↑ Infections']},
-      {k:'ect', name:'Cushing · ectopic ACTH (lung)', lv:['down','up','up'], hit:3, fb:'ignored', why:'A distant tumor (e.g. <b>small cell lung carcinoma</b>) makes ACTH. The pituitary is suppressed, but the tumor ignores feedback.', sx:['Moon face','Buffalo hump','Truncal obesity · striae','↑ Glucose (glucose intolerance)','Muscle wasting','Thin skin · poor wound healing','Osteoporosis','↑ Infections']},
-      {k:'add', name:'Addison (primary adrenal failure)', lv:['up','up','down'], hit:2, fb:'ok', why:'The adrenal cortex is destroyed (≥90%) so cortisol and aldosterone fall. <b>ACTH rises</b> and stimulates melanocytes → <b>hyperpigmentation</b>. Labs: <b>↓Na, ↑K</b> (Table 13.4).', sx:['Hyperpigmentation','↓ Na · ↑ K','Hypotension · dehydration','Hypoglycemia','Weakness · fatigue','Anorexia · N/V · weight loss','Sparse axillary/pubic hair','Acute: shock']}
+      {k:'n', name:'Normal', lv:['normal','normal','normal'], hit:-1, root:-1, order:[0,1,2], fb:'ok',
+       step:['The hypothalamus makes a normal amount of CRH.','CRH tells the pituitary to make a normal amount of ACTH.','ACTH tells the adrenal cortex to make cortisol. Cortisol then <b>feeds back</b> and holds CRH and ACTH steady.'],
+       why:'Cortisol feeds back and holds CRH and ACTH steady.', sx:[]},
+      {k:'exo', name:'Cushing · long-term steroids', lv:['down','down','down'], hit:-2, root:3, order:[0,1,2], fb:'ok',
+       rootWhy:'<b>Outside the axis.</b> A steroid drug (like prednisone) acts like cortisol.',
+       step:['The drug acts like cortisol and tells the hypothalamus to stop, so <b>CRH falls</b>.','The drug also tells the pituitary to stop, so <b>ACTH falls</b>.','With no ACTH, the patient\'s <b>own</b> adrenal glands make <b>less cortisol</b> and shrink. The Cushing signs come from the drug.'],
+       why:'Prednisone acts like cortisol and <b>suppresses CRH/ACTH</b>. The patient\'s own adrenal output falls, so <b>never stop steroids abruptly</b>.', sx:['Cushing features from the drug']},
+      {k:'pit', name:'Cushing · pituitary ACTH tumor', lv:['down','up','up'], hit:1, root:1, order:[1,2,0], fb:'ignored',
+       rootWhy:'<b>The pituitary.</b> A tumor there makes extra ACTH.',
+       step:['High cortisol tells the hypothalamus to stop, so <b>CRH falls</b>.','The pituitary tumor makes <b>too much ACTH</b>.','Extra ACTH makes the adrenal glands grow and make <b>too much cortisol</b>.'],
+       why:'The tumor makes excess ACTH → <b>adrenal hyperplasia and high cortisol</b>. ACTH-dependent.', sx:['Moon face','Buffalo hump','Truncal obesity · striae','↑ Glucose (glucose intolerance)','Muscle wasting','Thin skin · poor wound healing','Osteoporosis','↑ Infections']},
+      {k:'adr', name:'Cushing · adrenal tumor', lv:['down','down','up'], hit:2, root:2, order:[2,1,0], fb:'ok',
+       rootWhy:'<b>The adrenal cortex.</b> A tumor there makes cortisol on its own.',
+       step:['High cortisol also quiets the hypothalamus, so <b>CRH falls</b>.','High cortisol tells the pituitary to stop, so <b>ACTH falls</b>.','The adrenal tumor makes <b>too much cortisol</b> without being told to by ACTH.'],
+       why:'The adrenal tumor makes cortisol on its own (<b>not ACTH-directed</b>). High cortisol suppresses ACTH.', sx:['Moon face','Buffalo hump','Truncal obesity · striae','↑ Glucose (glucose intolerance)','Muscle wasting','Thin skin · poor wound healing','Osteoporosis','↑ Infections']},
+      {k:'ect', name:'Cushing · ectopic ACTH (lung)', lv:['down','up','up'], hit:3, root:3, order:[1,2,0], fb:'ignored',
+       rootWhy:'<b>Outside the axis.</b> A tumor somewhere else (like small cell lung cancer) makes ACTH.',
+       step:['High cortisol tells the hypothalamus to stop, so <b>CRH falls</b>.','The lung tumor makes ACTH, so blood <b>ACTH is high</b>. (The pituitary itself is told to stop, but the tumor ignores the brake.)','That ACTH drives the adrenal glands to make <b>too much cortisol</b>.'],
+       why:'A distant tumor (e.g. <b>small cell lung carcinoma</b>) makes ACTH. The pituitary is suppressed, but the tumor ignores feedback.', sx:['Moon face','Buffalo hump','Truncal obesity · striae','↑ Glucose (glucose intolerance)','Muscle wasting','Thin skin · poor wound healing','Osteoporosis','↑ Infections']},
+      {k:'add', name:'Addison (primary adrenal failure)', lv:['up','up','down'], hit:2, root:2, order:[2,1,0], fb:'ok',
+       rootWhy:'<b>The adrenal cortex.</b> It is destroyed (90% or more), so it can\'t make enough hormone.',
+       step:['The hypothalamus loses the brake too, so <b>CRH rises</b>.','Low cortisol takes the brake off, so the pituitary makes <b>more ACTH</b>. Extra ACTH darkens the skin.','The destroyed adrenal cortex makes <b>too little cortisol</b> (and aldosterone).'],
+       why:'The adrenal cortex is destroyed (≥90%) so cortisol and aldosterone fall. <b>ACTH rises</b> and stimulates melanocytes → <b>hyperpigmentation</b>. Labs: <b>↓Na, ↑K</b> (Table 13.4).', sx:['Hyperpigmentation','↓ Na · ↑ K','Hypotension · dehydration','Hypoglycemia','Weakness · fatigue','Anorexia · N/V · weight loss','Sparse axillary/pubic hair','Acute: shock']}
     ]
   };
+  const LV = {up:'↑ High', normal:'= Normal', down:'↓ Low'}, LVW = {up:'high', normal:'normal', down:'low'};
   root.innerHTML = `<div class="k-lab k-scope"><h4>🧭 Hormone axis lab · feedback detective</h4>
-  <p class="k-sub">The pattern of the three hormones tells you <b>where the problem is</b>. Pick an axis and a disease, guess the pituitary hormone, then watch the feedback loop. ${BK()}</p>
+  <p class="k-sub">The pattern of the three hormones tells you <b>where the problem is</b>. Pick an axis and a disease. First find where the problem <b>starts</b>, then predict <b>every</b> hormone in the order the problem spreads. ${BK()}</p>
   <div class="k-row" role="group" aria-label="Axis"><button type="button" class="k-btn" data-ax="hpt">🦋 Thyroid (HPT)</button><button type="button" class="k-btn" data-ax="hpa">⛰️ Adrenal (HPA)</button></div>
   <div class="k-row k-scs" role="group" aria-label="Scenario"></div>
-  <div class="k-predict"><p class="k-pq"></p><div class="k-row" style="margin:0"><button type="button" class="k-btn" data-g="up">↑ High</button><button type="button" class="k-btn" data-g="normal">Normal</button><button type="button" class="k-btn" data-g="down">↓ Low</button><span class="k-gfb" style="font-weight:800"></span></div></div>
+  <div class="k-predict"><p class="k-pq"></p><div class="k-row k-opts" style="margin:0" role="group" aria-label="Your answer"></div>
+    <div class="k-gfb" aria-live="polite"></div>
+    <div class="k-row" style="margin:8px 0 0"><button type="button" class="k-btn k-nextq" hidden>Next ↓</button><button type="button" class="k-btn k-again" hidden>🔁 Try this one again</button></div></div>
+  <ol class="k-chain" aria-label="Your chain so far"></ol>
   <div class="k-two" style="margin-top:12px"><div class="k-stage"><svg viewBox="0 0 420 380" role="img" aria-label="Endocrine axis diagram"></svg></div>
     <div><div class="k-meters" style="margin-top:0;grid-template-columns:1fr"></div><div class="k-story" aria-live="polite"></div><div class="k-chips"></div></div></div></div>`;
-  const R=$(root,'.k-lab'); let ax=root.dataset.ax||'hpt', si=1, guess=null, revealed=false;
-  function svgFor(a,s){
+  const R=$(root,'.k-lab'); let ax=root.dataset.ax||'hpt', si=1, q=0, answered=false, log=[];
+  const qsFor = s => (s.root===-1 ? [] : [{kind:'root'}]).concat(s.order.map(i=>({kind:'lv', i})));
+  function svgFor(a,s,rev,rootShown,done){
     const A=AX[a], ys=[60,180,300], col={up:'#B42318',down:'#175CD3',normal:'#067647'};
-    const shown = revealed;
     let g=`<defs><marker id="kxA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--k-muted)"/></marker></defs>`;
-    // feedback arcs
-    const fbCol = s.fb==='ignored'?'#98a2b3':'#B42318', fbW = shown ? ({up:6,normal:3.5,down:1.5})[s.lv[2]] : 3;
-    g+=`<path d="M300 300 C 400 300, 400 60, 300 60" fill="none" stroke="${fbCol}" stroke-width="${fbW}" ${s.fb==='ignored'&&shown?'stroke-dasharray="8 7"':''} opacity=".85"/>
-        <path d="M300 300 C 360 290, 360 190, 300 180" fill="none" stroke="${fbCol}" stroke-width="${fbW}" ${s.fb==='ignored'&&shown?'stroke-dasharray="8 7"':''} opacity=".85"/>
+    const fbCol = s.fb==='ignored'?'#98a2b3':'#B42318', fbW = done ? ({up:6,normal:3.5,down:1.5})[s.lv[2]] : 3;
+    g+=`<path d="M300 300 C 400 300, 400 60, 300 60" fill="none" stroke="${fbCol}" stroke-width="${fbW}" ${s.fb==='ignored'&&done?'stroke-dasharray="8 7"':''} opacity=".85"/>
+        <path d="M300 300 C 360 290, 360 190, 300 180" fill="none" stroke="${fbCol}" stroke-width="${fbW}" ${s.fb==='ignored'&&done?'stroke-dasharray="8 7"':''} opacity=".85"/>
         <line x1="296" y1="50" x2="296" y2="70" stroke="${fbCol}" stroke-width="5"/><line x1="296" y1="170" x2="296" y2="190" stroke="${fbCol}" stroke-width="5"/>
-        <text x="392" y="190" text-anchor="middle" font-size="12" font-weight="800" transform="rotate(90 392 190)" style="fill:${fbCol}">${A.h[2]} ─| negative feedback${s.fb==='ignored'&&shown?' (ignored by tumor)':''}</text>`;
+        <text x="392" y="190" text-anchor="middle" font-size="12" font-weight="800" transform="rotate(90 392 190)" style="fill:${fbCol}">${A.h[2]} ─| negative feedback${s.fb==='ignored'&&done?' (ignored by tumor)':''}</text>`;
     for(let i=0;i<3;i++){
-      const lv=s.lv[i], c=shown?col[lv]:'#98a2b3', bad=shown&&(s.hit===i || (s.hit===3&&i===1&&false));
+      const sh=rev.has(i), lv=s.lv[i], c=sh?col[lv]:'#98a2b3', bad=rootShown&&s.hit===i;
       g+=`<rect x="70" y="${ys[i]-34}" width="230" height="68" rx="18" fill="var(--k-card)" stroke="${bad?'#B42318':'#c5cbe0'}" stroke-width="${bad?4:2}" ${bad?'stroke-dasharray="6 4"':''}/>
         <text x="86" y="${ys[i]-8}" font-weight="800" font-size="15">${i===2?A.gland+' ':''}${A.nodes[i]}</text>
-        <text x="86" y="${ys[i]+18}" font-size="14" class="muted">makes <tspan font-weight="800" class="lvt ${shown?lv:''}">${A.h[i]}</tspan></text>
-        <g transform="translate(250 ${ys[i]})"><circle r="${shown?({up:22,normal:16,down:10})[lv]:14}" fill="${c}" opacity=".9"><animate attributeName="r" values="${shown?({up:'20;24;20',normal:'15;17;15',down:'9;11;9'})[lv]:'14;14;14'}" dur="${RM()?'0':'1.4'}s" repeatCount="indefinite"/></circle>
-        <text y="6" text-anchor="middle" font-weight="900" font-size="16" style="fill:#fff">${shown?({up:'↑',normal:'=',down:'↓'})[lv]:'?'}</text></g>`;
-      if(i<2) g+=`<line x1="150" y1="${ys[i]+36}" x2="150" y2="${ys[i+1]-38}" style="stroke:var(--k-muted)" stroke-width="${shown?({up:6,normal:3.5,down:1.5})[s.lv[i]]:3}" marker-end="url(#kxA)"/>`;
+        <text x="86" y="${ys[i]+18}" font-size="14" class="muted">makes <tspan font-weight="800" class="lvt ${sh?lv:''}">${A.h[i]}</tspan></text>
+        <g transform="translate(250 ${ys[i]})"><circle r="${sh?({up:22,normal:16,down:10})[lv]:14}" fill="${c}" opacity=".9"><animate attributeName="r" values="${sh?({up:'20;24;20',normal:'15;17;15',down:'9;11;9'})[lv]:'14;14;14'}" dur="${RM()?'0':'1.4'}s" repeatCount="indefinite"/></circle>
+        <text y="6" text-anchor="middle" font-weight="900" font-size="16" style="fill:#fff">${sh?({up:'↑',normal:'=',down:'↓'})[lv]:'?'}</text></g>`;
+      if(i<2) g+=`<line x1="150" y1="${ys[i]+36}" x2="150" y2="${ys[i+1]-38}" style="stroke:var(--k-muted)" stroke-width="${rev.has(i)?({up:6,normal:3.5,down:1.5})[s.lv[i]]:3}" marker-end="url(#kxA)"/>`;
     }
-    if(shown && s.hit===3) g+=`<g transform="translate(20 180)"><rect x="-6" y="-60" width="60" height="44" rx="10" fill="#fdecea" stroke="#B42318" stroke-width="2.5"/><text x="24" y="-33" text-anchor="middle" font-size="12" font-weight="800" style="fill:#912018">lung</text><line x1="40" y1="-16" x2="60" y2="0" stroke="#B42318" stroke-width="3" marker-end="url(#kxA)"/></g>`;
-    if(shown && s.hit===-2) g+=`<g transform="translate(20 330)"><rect x="-6" y="-22" width="70" height="40" rx="10" fill="#fff6cf" stroke="#c9a400" stroke-width="2.5"/><text x="29" y="3" text-anchor="middle" font-size="12" font-weight="800" style="fill:#4d3c00">💊 pred</text></g>`;
+    if(rootShown && s.hit===3) g+=`<g transform="translate(20 180)"><rect x="-6" y="-60" width="60" height="44" rx="10" fill="#fdecea" stroke="#B42318" stroke-width="2.5"/><text x="24" y="-33" text-anchor="middle" font-size="12" font-weight="800" style="fill:#912018">lung</text><line x1="40" y1="-16" x2="60" y2="0" stroke="#B42318" stroke-width="3" marker-end="url(#kxA)"/></g>`;
+    if(rootShown && s.hit===-2) g+=`<g transform="translate(20 330)"><rect x="-6" y="-22" width="70" height="40" rx="10" fill="#fff6cf" stroke="#c9a400" stroke-width="2.5"/><text x="29" y="3" text-anchor="middle" font-size="12" font-weight="800" style="fill:#4d3c00">💊 pred</text></g>`;
     return g;
   }
+  function rootOpts(){ const A=AX[ax]; return [[0,'Hypothalamus'],[1,'Pituitary'],[2,A.nodes[2]],[3,'Outside the axis (a drug, or a tumor somewhere else)']]; }
   function render(){
-    const s=SC[ax][si];
+    const s=SC[ax][si], A=AX[ax], qs=qsFor(s), done=q>=qs.length;
     $$(R,'[data-ax]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ax===ax));
     $(R,'.k-scs').innerHTML=SC[ax].map((x,i)=>`<button type="button" class="k-btn" data-i="${i}" aria-pressed="${i===si}">${x.name}</button>`).join('');
-    $$(R,'.k-scs [data-i]').forEach(b=>b.onclick=()=>{si=+b.dataset.i;guess=null;revealed=false;render();});
-    $(R,'.k-pq').textContent=`🤔 In ${s.name}, is ${AX[ax].h[1]} high, normal, or low?`;
-    $$(R,'[data-g]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.g===guess));
-    $(R,'svg').innerHTML=svgFor(ax,s);
-    $(R,'.k-meters').innerHTML=AX[ax].h.map((h,i)=>meter(h, revealed?s.lv[i]:'—')).join('');
-    $(R,'.k-story').innerHTML = revealed ? s.why : 'Tap a guess to reveal the loop.';
-    $(R,'.k-chips').innerHTML = revealed&&s.sx.length ? '<b style="margin-right:4px">Look for:</b>'+s.sx.map(x=>`<span class="k-sx">${x}</span>`).join('') : '';
-    fm.set(ax, revealed?s:null); const f=$(R,'.k-gfb'); if(revealed&&guess){const ok=guess===s.lv[1];f.textContent=ok?'✓ Nailed it':'✗ It\'s '+({up:'high',normal:'normal',down:'low'})[s.lv[1]];f.className='k-gfb k-fb '+(ok?'ok':'no');} else f.textContent='';
+    $$(R,'.k-scs [data-i]').forEach(b=>b.onclick=()=>{si=+b.dataset.i;reset();});
+    const rev=new Set(log.filter(e=>e.kind==='lv').map(e=>e.i)), rootShown=log.some(e=>e.kind==='root')||(done&&s.root!==-1);
+    // question
+    const opts=$(R,'.k-opts'), pq=$(R,'.k-pq'), f=$(R,'.k-gfb');
+    if(done){
+      const right=log.filter(e=>e.ok).length;
+      pq.innerHTML=`🏁 Chain complete: <b>${right} / ${log.length}</b> right.`;
+      opts.innerHTML=''; f.textContent=''; f.className='k-gfb';
+    } else {
+      const cq=qs[q], n=q+1;
+      if(cq.kind==='root'){
+        pq.innerHTML=`🤔 Step ${n} of ${qs.length}: In <b>${s.name}</b>, where does the problem <b>start</b>?`;
+        opts.innerHTML=rootOpts().map(([v,l])=>`<button type="button" class="k-btn" data-r="${v}">${l}</button>`).join('');
+      } else {
+        const lead = log.length ? 'So what happens to' : 'Is';
+        pq.innerHTML=`🤔 Step ${n} of ${qs.length}: ${lead} <b>${A.h[cq.i]}</b> (from the ${A.nodes[cq.i].toLowerCase()})${log.length?'?':' high, normal, or low?'}`;
+        opts.innerHTML=['up','normal','down'].map(v=>`<button type="button" class="k-btn" data-g="${v}">${LV[v]}</button>`).join('');
+      }
+      if(answered){
+        const e=log[log.length-1];
+        $$(opts,'button').forEach(b=>{ b.disabled=true; const val=b.dataset.r!==undefined?+b.dataset.r:b.dataset.g; if(val===e.pick) b.setAttribute('aria-pressed','true'); });
+        f.innerHTML=(e.ok?'✓ Right. ':'✗ Not quite. ')+e.reason; f.className='k-gfb k-fb '+(e.ok?'ok':'no');
+      } else { f.textContent=''; f.className='k-gfb'; }
+      $$(opts,'[data-r]').forEach(b=>b.onclick=()=>answer(+b.dataset.r));
+      $$(opts,'[data-g]').forEach(b=>b.onclick=()=>answer(b.dataset.g));
+    }
+    $(R,'.k-nextq').hidden=!(answered&&!done);
+    $(R,'.k-nextq').textContent = (q+1>=qs.length) ? 'See the whole loop ↓' : 'Next link in the chain ↓';
+    $(R,'.k-again').hidden=!done;
+    // vertical chain of answered steps
+    $(R,'.k-chain').innerHTML=log.map(e=>`<li class="k-link ${e.ok?'ok':'no'}"><span class="k-link-h">${e.kind==='root'?'Starts in: '+e.label:e.label+' '+({up:'↑',normal:'=',down:'↓'})[e.truth]}</span><span class="k-link-r">${e.reason}</span>${e.ok?'':`<span class="k-link-you">You said: ${e.yourLabel}</span>`}</li>`).join('');
+    $(R,'svg').innerHTML=svgFor(ax,s,rev,rootShown,done);
+    $(R,'.k-meters').innerHTML=A.h.map((h,i)=>meter(h, rev.has(i)?s.lv[i]:'—')).join('');
+    $(R,'.k-story').innerHTML = done ? s.why : (log.length ? 'Keep following the chain.' : 'Answer each step to light up the loop.');
+    $(R,'.k-chips').innerHTML = done&&s.sx.length ? '<b style="margin-right:4px">Look for:</b>'+s.sx.map(x=>`<span class="k-sx">${x}</span>`).join('') : '';
+    fm.set(ax, done?s:null);
   }
-  $$(R,'[data-ax]').forEach(b=>b.onclick=()=>{ax=b.dataset.ax;si=1;guess=null;revealed=false;render();});
-  $$(R,'[data-g]').forEach(b=>b.onclick=()=>{guess=b.dataset.g;revealed=true;render();});
+  function answer(pick){
+    if(answered) return;
+    const s=SC[ax][si], A=AX[ax], cq=qsFor(s)[q];
+    if(cq.kind==='root'){
+      const labels=Object.fromEntries(rootOpts());
+      log.push({kind:'root', pick, ok:pick===s.root, label:labels[s.root], yourLabel:labels[pick], reason:s.rootWhy});
+    } else {
+      const truth=s.lv[cq.i];
+      log.push({kind:'lv', i:cq.i, pick, truth, ok:pick===truth, label:A.h[cq.i], yourLabel:LVW[pick], reason:s.step[cq.i]});
+    }
+    answered=true; render();
+  }
+  function reset(){ q=0; answered=false; log=[]; render(); }
+  $(R,'.k-nextq').onclick=()=>{ q++; answered=false; render(); };
+  $(R,'.k-again').onclick=reset;
+  $$(R,'[data-ax]').forEach(b=>b.onclick=()=>{ax=b.dataset.ax;si=1;reset();});
   const fmBox=document.createElement('div'); R.appendChild(fmBox); const fm=L.feedmap(fmBox);
   render();
 };
